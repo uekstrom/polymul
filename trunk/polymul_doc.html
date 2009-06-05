@@ -18,11 +18,13 @@ floating point numbers.
 The Polymul library was written by Ulf Ekstr&ouml;m 2009. It is
 released under the MIT license (see <tt>polymul.h</tt> for the
 exact license text). The library is not yet finalized, so
-some API changes can happen. If you use this library in a scientific work you are kindly asked to cite <i>``Polymul library, Ulf Ekstr&ouml;m 2009''</i>.
+some API changes can happen. If you use this library in a 
+scientific work you are kindly asked to cite 
+<i>``Polymul library, Ulf Ekstr&ouml;m 2009''</i>.
 
 <h2>Download</h2>
 The latest version of the library can be downloaded from 
-<a href="http://code.google.com/p/polymul">code.google.com/p/polymul</a>.
+<a href="http://polymul.googlecode.com/">polymul.googlecode.com</a>.
 
 
 <h2>Polynomial representation</h2> 
@@ -49,8 +51,12 @@ Because the library uses polynomial order and number of variables
 as template parameters these have to be known at compile time.
 This makes the library most useful for cases where either the 
 order or the number of variables in known beforehand, and the
-other parameter can be handled through a switch.
+other parameter can be handled through a switch. The C++ standard
+recommends a maximum recursion depth of at least 17, so 
+in principle you are limited to polynomials of degree less than
+17 and with less than 17 variables. 
 </p>
+
 
 <h2>C++ API</h2>
 <h3><tt>template&lt;class numtype, int Nvar, int Ndeg&gt; class
@@ -72,15 +78,22 @@ The <tt>polynomial</tt> class has the following methods:
 Constructors for <tt>polynomial</tt>. If the <tt>c0</tt> argument is given the
 polynomial is set to zero except the constant term which is set
 to <tt>c0</tt>.
+
 <h3><tt>void polynomial::zero();</tt></h3>
 Set all coefficients to 0.
+
 <h3><tt>static int polynomial::size();</tt></h3> Return the number of
 coefficients (terms). This is a compile-time constant.
+
+<h3><tt>numtype polynomial::eval(const numtype x[Nvar]);</tt></h3>
+Evaluate the polynomial at x. This is reasonable fast but may
+not be optimal in terms of number of multiplications and additions.
+
 <h3><tt>void polynomial::exponents(int term, int
-exponents[]);</tt></h3> Calculate the exponents of <tt>term</tt>, using
+exponents[Nvar]);</tt></h3> Calculate the exponents of <tt>term</tt>, using
 a very slow method. This is intended for printing, not for fast
 computation.
-<h3><tt>int polynomial::term_index(int exponents[]);</tt></h3>
+<h3><tt>int polynomial::term_index(int exponents[Nvar]);</tt></h3>
 Return the index of the term with <tt>exponents</tt>. Again, this
 is a slow function intended for printing and debugging.
 
@@ -119,6 +132,7 @@ check <tt>polymul.h</tt> for details.
 
 <h3><tt>void taylormul(polynomial &p1, const polynomial
     &p2);</tt></h3> Like <tt>taylormul()</tt>, but computes <tt>p1 = p1*p2</tt> in-place.
+
 
 <h2>Performance</h2> In a micro-benchmark one million 5 variable, 5:th
 degree double precision polynomials were multiplied

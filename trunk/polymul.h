@@ -78,120 +78,6 @@ struct poly_bin<0,k>
     enum { value = 1 };
 };
 
-
-
-template<class numtype, int Nvar, int Ndeg>
-  class polynomial
-{
- public:
-  polynomial(void) {}
-  polynomial(numtype c0) 
-    { 
-      c[0] = c0;
-      for (int i=1;i<this->size();i++)
-	c[i] = 0;
-    }
-  numtype operator[](int i) const
-  {
-    assert(i>=0);
-    assert(i<this->size());
-    return c[i];
-  }
-  numtype &operator[](int i)
-  {
-    assert(i>=0);
-    assert(i<this->size());
-    return c[i];
-  }
-  static int size(void) { return poly_bin<Nvar+Ndeg,Ndeg>::value; }
-  void zero(void)
-  {
-    for (int i=0;i<size();i++)
-      c[i] = 0;
-  }
-  // This is a _very slow_ function to get the exponents
-  // of a particular term. 
-  static void exponents(int term, int exponents[])
-  {
-    if (Nvar == 1)
-      {
-	exponents[0] = term;
-	return;
-      }
-    for (int i=0;i<Nvar;i++)
-      exponents[i] = 0;
-    assert(term >= 0);
-    if (term >= poly_bin<Nvar+Ndeg,Ndeg>::value)
-      {
-	assert(0 && "term < poly_bin<Nvar+Ndeg,Ndeg>::value");
-      }
-    for (int i=0;i<term;i++)
-      polynomial<numtype,Nvar,Ndeg>::next_exponents(Nvar,exponents);
-  }
-  // Return the index of the term with certain exponents
-  static int term_index(const int exponents[])
-  {
-    int N = 0;
-    for (int i=0;i<Nvar;i++)
-      N += exponents[i];
-    int i = 0, idx = 0;
-    N--;
-    while (N >= 0)
-      {
-	idx += polynomial<numtype,Nvar,Ndeg>::polylen(Nvar-i,N);
-	N -= exponents[i];
-	i++;
-      }
-    return idx;
-  }
-
-  numtype c[poly_bin<Nvar+Ndeg,Ndeg>::value];
-
- protected:
-  static void next_exponents(int nvar, int m[])
-  {
-    int k = 0;
-    for (int i=0;i<nvar-1;i++)
-      k += m[i];
-    if (k == 0)
-      {
-	m[0] = m[nvar-1] + 1;
-	m[nvar-1] = 0;
-	return;
-      }
-    if (m[nvar-2] > 0)
-      {
-	m[nvar-1]++;
-	m[nvar-2]--;
-      }
-    else
-      {
-	next_exponents(nvar-1,m);
-	for (int i=nvar-2;i>=0;i--)
-	  {
-	    if (m[i] > 0)
-	      {
-		m[i] += m[nvar-1];
-		break;
-	      }
-	  }
-	m[nvar-1] = 0;
-      }
-  }
-  // = binomial(nvar+ndeg,ndeg), but this one
-  // can be evaluated at run time.
-  static int polylen(int nvar, int ndeg)
-  {
-    int len = 1;
-    for (int k=1;k<=nvar;k++)
-      {
-	len *= ndeg + k;
-	len /= k;
-      }
-    return len;
-  }
-};
-
 namespace polymul_internal
 {
 
@@ -492,7 +378,195 @@ class taylor_inplace_multiplier<numtype, 1, Ndeg, 0> //Above code is only for Nd
   }
 };
 
+template<class numtype, int Nvar, int Ndeg>
+class polynomial_evaluator
+{
+ public:
+  static numtype eval(const numtype p[], const numtype x[])
+  {
+    return polynomial_evaluator<numtype,Nvar,Ndeg>
+      ::eval_monomial(p+poly_bin<Nvar+Ndeg-1,Ndeg-1>::value,x) +
+      polynomial_evaluator<numtype,Nvar,Ndeg-1>
+      ::eval(p,x);
+  }
+
+  // Evaluate monomial in Nvar variables.
+  // M(N,K) = x[0]*M(N-1,K) + M(N,K-1)
+  static numtype eval_monomial(const numtype p[], const numtype x[])
+  {
+    return x[0]*polynomial_evaluator<numtype,Nvar,Ndeg-1>
+      ::eval_monomial(p,x) +
+      polynomial_evaluator<numtype,Nvar-1,Ndeg>
+      ::eval_monomial(p+poly_bin<Nvar+Ndeg-2,Ndeg-1>::value,
+		      x+1);
+  }
+};
+
+
+/*
+  1 x y x^2 xy y^2 =
+  
+  1 [x] [y] x[x y] y^2
+
+ */
+template<class numtype, int Ndeg>
+class polynomial_evaluator<numtype, 1, Ndeg>
+{
+ public:
+  // a + bx + cx^2 = a + x(b + x(c))
+  static numtype eval(const numtype p[], const numtype x[])
+  {
+    // Horner scheme:
+    numtype sum = p[Ndeg];
+    for (int i=Ndeg-1;i>=0;i--)
+      sum = sum*x[0] + p[i];
+    return sum;
+  }
+  static numtype eval_monomial(const numtype p[], const numtype x[])
+  {
+    numtype xn = 1;
+    for (int i=0;i<Ndeg;i++)
+      xn *= x[0];
+    return xn*p[0];
+  }
+};
+
+template<class numtype, int Nvar>
+class polynomial_evaluator<numtype, Nvar, 0>
+{
+ public:
+  static numtype eval(const numtype p[], const numtype x[])
+  {
+    return p[0];
+  }
+  static numtype eval_monomial(const numtype p[], const numtype x[])
+  {
+    return p[0];
+  }
+};
+
 }
+// End of namespace polymul_internal
+
+
+template<class numtype, int Nvar, int Ndeg>
+  class polynomial
+{
+ public:
+  polynomial(void) {}
+  polynomial(numtype c0) 
+    { 
+      c[0] = c0;
+      for (int i=1;i<this->size();i++)
+	c[i] = 0;
+    }
+  numtype operator[](int i) const
+  {
+    assert(i>=0);
+    assert(i<this->size());
+    return c[i];
+  }
+  numtype &operator[](int i)
+  {
+    assert(i>=0);
+    assert(i<this->size());
+    return c[i];
+  }
+  static int size(void) { return poly_bin<Nvar+Ndeg,Ndeg>::value; }
+  void zero(void)
+  {
+    for (int i=0;i<size();i++)
+      c[i] = 0;
+  }
+  // This is a _very slow_ function to get the exponents
+  // of a particular term. 
+  static void exponents(int term, int exponents[Nvar])
+  {
+    if (Nvar == 1)
+      {
+	exponents[0] = term;
+	return;
+      }
+    for (int i=0;i<Nvar;i++)
+      exponents[i] = 0;
+    assert(term >= 0);
+    if (term >= poly_bin<Nvar+Ndeg,Ndeg>::value)
+      {
+	assert(0 && "term < poly_bin<Nvar+Ndeg,Ndeg>::value");
+      }
+    for (int i=0;i<term;i++)
+      polynomial<numtype,Nvar,Ndeg>::next_exponents(Nvar,exponents);
+  }
+  // Return the index of the term with certain exponents
+  static int term_index(const int exponents[Nvar])
+  {
+    int N = 0;
+    for (int i=0;i<Nvar;i++)
+      N += exponents[i];
+    int i = 0, idx = 0;
+    N--;
+    while (N >= 0)
+      {
+	idx += polynomial<numtype,Nvar,Ndeg>::polylen(Nvar-i,N);
+	N -= exponents[i];
+	i++;
+      }
+    return idx;
+  }
+  // Evaluate the polynomial at x.
+  numtype eval(const numtype x[Nvar]) const
+  {
+    return polymul_internal::polynomial_evaluator<numtype,Nvar,Ndeg>::
+      eval(c,x);
+  }
+
+  numtype c[poly_bin<Nvar+Ndeg,Ndeg>::value];
+
+ protected:
+  static void next_exponents(int nvar, int m[Nvar])
+  {
+    int k = 0;
+    for (int i=0;i<nvar-1;i++)
+      k += m[i];
+    if (k == 0)
+      {
+	m[0] = m[nvar-1] + 1;
+	m[nvar-1] = 0;
+	return;
+      }
+    if (m[nvar-2] > 0)
+      {
+	m[nvar-1]++;
+	m[nvar-2]--;
+      }
+    else
+      {
+	next_exponents(nvar-1,m);
+	for (int i=nvar-2;i>=0;i--)
+	  {
+	    if (m[i] > 0)
+	      {
+		m[i] += m[nvar-1];
+		break;
+	      }
+	  }
+	m[nvar-1] = 0;
+      }
+  }
+  // = binomial(nvar+ndeg,ndeg), but this one
+  // can be evaluated at run time.
+  static int polylen(int nvar, int ndeg)
+  {
+    int len = 1;
+    for (int k=1;k<=nvar;k++)
+      {
+	len *= ndeg + k;
+	len /= k;
+      }
+    return len;
+  }
+};
+
 
 // User interface
 
@@ -540,6 +614,8 @@ void taylormul(polynomial<numtype, Nvar,Ndeg> &p1,
   polymul_internal::taylor_inplace_multiplier<numtype,Nvar,Ndeg,0>
     ::mul(p1.c,p2.c);
 }
+
+
 
 
 #endif

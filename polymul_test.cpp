@@ -45,24 +45,18 @@ int main(void)
   
   // Multiplying
   polynomial<int,3,2> p1, p2, pt;
-  polynomial<int,3,4> pp(0),ppset;
+  polynomial<int,3,4> pp;
   for (int i=0;i<p1.size();i++)
     p1[i] = 7+i;
   for (int i=0;i<p2.size();i++)
     p2[i] = i*i/2 - i;
   
-  pp.zero();
-  polymul_add(pp,p1,p2);
-  polymul(ppset,p1,p2);
+  polymul(pp,p1,p2);
   for (int i=0;i<pp.size();i++)
     {
       if (pp_good[i] != pp[i])
 	{
-	  cout << "WARNING (known good vs polymul_add): " <<  i << " "<< pp_good[i]<< " " << pp[i] <<endl;
-	}
-      if (ppset[i] != pp[i])
-	{
-	  cout << "WARNING (set vs add): " <<  i << " "<< pp[i]<< " " << ppset[i] <<endl;
+	  cout << "WARNING (known good vs polymul): " <<  i << " "<< pp_good[i]<< " " << pp[i] <<endl;
 	}
     }
   // Check that multiply then eval gives the same as eval then multiply

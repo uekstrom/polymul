@@ -4,14 +4,13 @@
 </head>
 <body>
 <div style="width:50em">
-<h1>Polymul 0.9</h1>
+<h1>Polymul 1.0</h1>
 <p>
 Polymul is a self-contained C++ template library for efficient
 multiplication of multivariate polynomials.  It is intended for low
 order polynomials of a few variables, but is in principle limited only
 by the compilers maximal template recursion depth. Polynomials can be
-created over any scalar type, such as integers or double precision
-floating point numbers.
+created over any scalar type, such as integers or floating point numbers.
 </p>
 
 <h2>About</h2>
@@ -99,10 +98,12 @@ is a slow function intended for printing and debugging.
 
 <h3>Multiplication functions</h3>
 
-Two different functions are provided for multiplying
+A few different functions are provided for multiplying
 polynomials. These functions are not methods
 of <tt>polynomial</tt>. Template arguments have been omitted below,
-check <tt>polymul.h</tt> for details.
+check <tt>polymul.h</tt> for details. You can use these functions
+directly on coefficient arrays by using an
+appropriate <tt>reinterpret_cast</tt>.
 
 <h3><tt>void polymul(polynomial &dst, const polynomial &p1, const
     polynomial &p2);</tt></h3> Multiply two polynomials with the same
@@ -113,11 +114,6 @@ check <tt>polymul.h</tt> for details.
     must have the exact right order to be able to represent the
     product.
 
-<h3><tt>void polymul_add(polynomial &dst, const polynomial &p1, const
-    polynomial &p2);</tt></h3>
-    Like <tt>polymul()</tt>, but the result is added to dst.
-
-
 <h3><tt>void taylormul(polynomial &dst, const polynomial &p1, const
     polynomial &p2);</tt></h3> Here <tt>dst, p1</tt> and <tt>p2</tt>
     are polynomials of the same degree.  The product of <tt>p1</tt>
@@ -125,10 +121,6 @@ check <tt>polymul.h</tt> for details.
     to the original order of the polynomials (the higher terms are not
     calculated). The name comes from the usefulness of this function
     in calculating the product of Taylor expansions. 
-
-<h3><tt>void taylormul_add(polynomial &dst, const polynomial &p1, const
-    polynomial &p2);</tt></h3>
-    Like <tt>taylormul()</tt>, but the result is added to dst.
 
 <h3><tt>void taylormul(polynomial &p1, const polynomial
     &p2);</tt></h3> Like <tt>taylormul()</tt>, but computes <tt>p1 = p1*p2</tt> in-place.

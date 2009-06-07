@@ -1,4 +1,5 @@
 #include <iostream>
+#include <valarray>
 using namespace std;
 #include "polymul.h"
 
@@ -32,6 +33,7 @@ int main(void)
 
   cout << "Starting tests.." << endl;
   
+
   // Evaluating
   polynomial<int,1,2> peval_1d;
   for (int i=0;i<peval_1d.size();i++)
@@ -45,7 +47,7 @@ int main(void)
   
   // Multiplying
   polynomial<int,3,2> p1, p2, pt;
-  polynomial<int,3,4> pp;
+  polynomial<int,3,4> pp(1);
   for (int i=0;i<p1.size();i++)
     p1[i] = 7+i;
   for (int i=0;i<p2.size();i++)

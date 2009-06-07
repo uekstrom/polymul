@@ -275,10 +275,8 @@ class taylor_multiplier
  public:
   static void mul(numtype dst[], const numtype p1[], const numtype p2[])
   {
-    // Use M2^deg2
     polynomial_multiplier<numtype,Nvar,Ndeg1-Ndeg2,Ndeg2>
       ::mul_monomial(dst,p1,p2+binomial<Nvar+Ndeg2-1,Ndeg2-1>::value);   
-    //M2^Ndeg2 not used any more
     taylor_multiplier<numtype,Nvar,Ndeg1,Ndeg2-1>::mul(dst,p1,p2); 
   }
   static void mul_set(numtype dst[], const numtype p1[], const numtype p2[])
@@ -456,7 +454,7 @@ template<class numtype, int Nvar, int Ndeg>
 {
  public:
   polynomial(void) {}
-  polynomial(numtype c0) 
+  polynomial(const numtype &c0) 
     { 
       c[0] = c0;
       for (int i=1;i<this->size();i++)
@@ -484,6 +482,7 @@ template<class numtype, int Nvar, int Ndeg>
   // of a particular term. 
   static void exponents(int term, int exponents[Nvar])
   {
+    assert(term >= 0);
     if (Nvar == 1)
       {
 	exponents[0] = term;
@@ -491,7 +490,6 @@ template<class numtype, int Nvar, int Ndeg>
       }
     for (int i=0;i<Nvar;i++)
       exponents[i] = 0;
-    assert(term >= 0);
     if (term >= polymul_internal::binomial<Nvar+Ndeg,Ndeg>::value)
       {
 	assert(0 && "term < binomial<Nvar+Ndeg,Ndeg>::value");

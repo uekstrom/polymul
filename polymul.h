@@ -52,6 +52,12 @@ OTHER DEALINGS IN THE SOFTWARE.
   function with lower nvar value.
 */
 
+// Some compilers implement the C99 restrict also in C++.
+#ifdef __GNUC__
+#define POLYMUL_RESTRICT __restrict__
+#else
+#define POLYMUL_RESTRICT 
+#endif
 
 
 namespace polymul_internal
@@ -90,7 +96,7 @@ class polynomial_multiplier
 {
  public:
   // _add_ the product between p1 and p2 to dst.
-  static void mul(numtype dst[], const numtype p1[], const numtype p2[])
+  static void mul(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype p2[])
   { 
     polynomial_multiplier<numtype,Nvar,Ndeg1,Ndeg2-1>::mul(dst,p1,p2);
     polynomial_multiplier<numtype,Nvar,Ndeg1,Ndeg2>
@@ -98,7 +104,7 @@ class polynomial_multiplier
   }
   // m2 is a monomial in Nvar variables and of order Ndeg2.
   // _add_ the product of p1 and m2 to dst.
-  static void mul_monomial(numtype dst[], const numtype p1[], const numtype m2[])
+  static void mul_monomial(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype m2[])
   { 
     polynomial_multiplier<numtype,Nvar-1,Ndeg1,Ndeg2>
       ::mul(dst+binomial<Nvar+Ndeg1+Ndeg2-1,Ndeg1+Ndeg2-1>::value,
@@ -109,7 +115,7 @@ class polynomial_multiplier
   }
 
 
-  static void mul_set(numtype dst[], const numtype p1[], const numtype p2[])
+  static void mul_set(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype p2[])
   { 
     polynomial_multiplier<numtype,Nvar,Ndeg1,Ndeg2-1>
       ::mul_set(dst,p1,p2);
@@ -123,7 +129,7 @@ class polynomial_multiplier
 		p2 + binomial<Nvar+Ndeg2-1,Ndeg2-1>::value);
   }
 
-  static void mul_monomial_set(numtype dst[], const numtype p1[], const numtype m2[])
+  static void mul_monomial_set(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype m2[])
   { 
     // Unclear what this would mean, since the lower parts of dst are not touched.
     assert(0 && " I am not supposed to be here..");
@@ -135,18 +141,18 @@ template<class numtype, int Ndeg1, int Ndeg2>
   class polynomial_multiplier<numtype, 1, Ndeg1, Ndeg2>
 {
  public:
-  static void mul(numtype dst[], const numtype p1[], const numtype p2[])
+  static void mul(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype p2[])
   {
     for (int i=0;i<=Ndeg1;i++)
       for (int j=0;j<=Ndeg2;j++)
 	dst[i+j] += p1[i]*p2[j];
   }
-  static void mul_monomial(numtype dst[], const numtype p1[], const numtype m2[])
+  static void mul_monomial(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype m2[])
   {
     for (int i=0;i<=Ndeg1;i++)
       dst[i+Ndeg2] += m2[0]*p1[i];
   }
-  static void mul_set(numtype dst[], const numtype p1[], const numtype p2[])
+  static void mul_set(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype p2[])
   {
     for (int i=0;i<=Ndeg1;i++)
       dst[i] = p1[i]*p2[0]; 
@@ -158,7 +164,7 @@ template<class numtype, int Ndeg1, int Ndeg2>
       for (int j=1;j<=Ndeg2;j++)
 	dst[i+j] += p1[i]*p2[j];
   }
-  static void mul_monomial_set(numtype dst[], const numtype p1[], const numtype m2[])
+  static void mul_monomial_set(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype m2[])
   {
     for (int i=0;i<Ndeg1;i++)
       dst[i+Ndeg2] = m2[0]*p1[i];
@@ -169,22 +175,22 @@ template<class numtype, int Nvar, int Ndeg2>
   class polynomial_multiplier<numtype, Nvar, 0, Ndeg2>
 {
  public:
-  static void mul(numtype dst[], const numtype p1[], const numtype p2[])
+  static void mul(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype p2[])
   {
     for (int i=0;i<binomial<Nvar+Ndeg2,Ndeg2>::value;i++)
       dst[i] += p1[0]*p2[i];
   }
-  static void mul_monomial(numtype dst[], const numtype p1[], const numtype m2[])
+  static void mul_monomial(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype m2[])
   {
     for (int i=binomial<Nvar+Ndeg2-1,Ndeg2-1>::value;i<binomial<Nvar+Ndeg2,Ndeg2>::value;i++)
       dst[i] += p1[0]*m2[i-binomial<Nvar+Ndeg2-1,Ndeg2-1>::value];
   }
-  static void mul_set(numtype dst[], const numtype p1[], const numtype p2[])
+  static void mul_set(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype p2[])
   {
     for (int i=0;i<binomial<Nvar+Ndeg2,Ndeg2>::value;i++)
       dst[i] = p1[0]*p2[i];
   }
-  static void mul_monomial_set(numtype dst[], const numtype p1[], const numtype m2[])
+  static void mul_monomial_set(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype m2[])
   {
     for (int i=binomial<Nvar+Ndeg2-1,Ndeg2-1>::value;i<binomial<Nvar+Ndeg2,Ndeg2>::value;i++)
       dst[i] = p1[0]*m2[i-binomial<Nvar+Ndeg2-1,Ndeg2-1>::value];
@@ -195,22 +201,22 @@ template<class numtype, int Ndeg2>
   class polynomial_multiplier<numtype, 1, 0, Ndeg2>
 {
  public:
-  static void mul(numtype dst[], const numtype p1[], const numtype p2[])
+  static void mul(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype p2[])
   {
     for (int i=0;i<binomial<1+Ndeg2,Ndeg2>::value;i++)
       dst[i] += p1[0]*p2[i];
   }
-  static void mul_monomial(numtype dst[], const numtype p1[], const numtype m2[])
+  static void mul_monomial(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype m2[])
   {
     for (int i=binomial<1+Ndeg2-1,Ndeg2-1>::value;i<binomial<1+Ndeg2,Ndeg2>::value;i++)
       dst[i] += p1[0]*m2[i-binomial<1+Ndeg2-1,Ndeg2-1>::value];
   }
-  static void mul_set(numtype dst[], const numtype p1[], const numtype p2[])
+  static void mul_set(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype p2[])
   {
     for (int i=0;i<binomial<1+Ndeg2,Ndeg2>::value;i++)
       dst[i] = p1[0]*p2[i];
   }
-  static void mul_monomial_set(numtype dst[], const numtype p1[], const numtype m2[])
+  static void mul_monomial_set(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype m2[])
   {
     for (int i=binomial<1+Ndeg2-1,Ndeg2-1>::value;i<binomial<1+Ndeg2,Ndeg2>::value;i++)
       dst[i] = p1[0]*m2[i-binomial<1+Ndeg2-1,Ndeg2-1>::value];
@@ -221,22 +227,22 @@ template<class numtype, int Nvar, int Ndeg1>
   class polynomial_multiplier<numtype, Nvar, Ndeg1, 0>
 {
  public:
-  static void mul(numtype dst[], const numtype p1[], const numtype p2[])
+  static void mul(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype p2[])
   {
     for (int i=0;i<binomial<Nvar+Ndeg1,Ndeg1>::value;i++)
       dst[i] += p1[i]*p2[0];
   }
-  static void mul_monomial(numtype dst[], const numtype p1[], const numtype m2[])
+  static void mul_monomial(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype m2[])
   {
     for (int i=0;i<binomial<Nvar+Ndeg1,Ndeg1>::value;i++)
       dst[i] += p1[i]*m2[0];
   }
-  static void mul_set(numtype dst[], const numtype p1[], const numtype p2[])
+  static void mul_set(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype p2[])
   {
     for (int i=0;i<binomial<Nvar+Ndeg1,Ndeg1>::value;i++)
       dst[i] = p1[i]*p2[0];
   }
-  static void mul_monomial_set(numtype dst[], const numtype p1[], const numtype m2[])
+  static void mul_monomial_set(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype m2[])
   {
     for (int i=0;i<binomial<Nvar+Ndeg1,Ndeg1>::value;i++)
       dst[i] = p1[i]*m2[0];
@@ -247,19 +253,19 @@ template<class numtype, int Nvar>
   class polynomial_multiplier<numtype, Nvar, 0, 0>
 {
  public:
-  static void mul(numtype dst[], const numtype p1[], const numtype p2[])
+  static void mul(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype p2[])
   {
     dst[0] += p1[0]*p2[0];
   }
-  static void mul_monomial(numtype dst[], const numtype p1[], const numtype m2[])
+  static void mul_monomial(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype m2[])
   {
     dst[0] += p1[0]*m2[0];
   }
-  static void mul_set(numtype dst[], const numtype p1[], const numtype p2[])
+  static void mul_set(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype p2[])
   {
     dst[0] = p1[0]*p2[0];
   }
-  static void mul_monomial_set(numtype dst[], const numtype p1[], const numtype m2[])
+  static void mul_monomial_set(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype m2[])
   {
     dst[0] = p1[0]*m2[0];
   }
@@ -273,13 +279,13 @@ template<class numtype, int Nvar, int Ndeg1, int Ndeg2>
 class taylor_multiplier
 {
  public:
-  static void mul(numtype dst[], const numtype p1[], const numtype p2[])
+  static void mul(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype p2[])
   {
     polynomial_multiplier<numtype,Nvar,Ndeg1-Ndeg2,Ndeg2>
       ::mul_monomial(dst,p1,p2+binomial<Nvar+Ndeg2-1,Ndeg2-1>::value);   
     taylor_multiplier<numtype,Nvar,Ndeg1,Ndeg2-1>::mul(dst,p1,p2); 
   }
-  static void mul_set(numtype dst[], const numtype p1[], const numtype p2[])
+  static void mul_set(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype p2[])
   {
     taylor_multiplier<numtype,Nvar,Ndeg1,Ndeg2-1>::mul_set(dst,p1,p2); 
     polynomial_multiplier<numtype,Nvar,Ndeg1-Ndeg2,Ndeg2>
@@ -291,12 +297,12 @@ template<class numtype, int Nvar, int Ndeg1>
   class taylor_multiplier<numtype, Nvar,Ndeg1,0>
 {
  public:
-  static void mul(numtype dst[], const numtype p1[], const numtype p2[])
+  static void mul(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype p2[])
   {
     for (int i=0;i<binomial<Ndeg1+Nvar,Ndeg1>::value;i++)
       dst[i] += p1[i]*p2[0];
   }
-  static void mul_set(numtype dst[], const numtype p1[], const numtype p2[])
+  static void mul_set(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype p2[])
   {
     for (int i=0;i<binomial<Ndeg1+Nvar,Ndeg1>::value;i++)
       dst[i] = p1[i]*p2[0];
@@ -324,7 +330,7 @@ template<class numtype, int Nvar, int Ndeg>
 class taylor_inplace_multiplier<numtype, Nvar, Ndeg, Ndeg> // (3) final contribution to M1(Ndeg)
 {
  public:
-  static void mul(numtype p1[], const numtype p2[])
+  static void mul(numtype POLYMUL_RESTRICT p1[], const numtype p2[])
   {
     for (int i=binomial<Nvar+Ndeg-1,Ndeg-1>::value;
 	 i<binomial<Nvar+Ndeg,Ndeg>::value;i++)
@@ -337,7 +343,7 @@ template<class numtype, int Nvar, int Ndeg>
 class taylor_inplace_multiplier<numtype, Nvar, Ndeg, 0> // (1) comes in here, sets M1(Ndeg)
 {
  public:
-  static void mul(numtype p1[], const numtype p2[])
+  static void mul(numtype POLYMUL_RESTRICT p1[], const numtype p2[])
   {
     for (int i=binomial<Nvar+Ndeg-1,Ndeg-1>::value;i<binomial<Nvar+Ndeg,Ndeg>::value;i++)
       p1[i] *= p2[0];
@@ -349,7 +355,7 @@ template<class numtype, int Nvar>
 class taylor_inplace_multiplier<numtype, Nvar, 0, 0> // (4), last coefficient.
 {
  public:
-  static void mul(numtype p1[], const numtype p2[])
+  static void mul(numtype POLYMUL_RESTRICT p1[], const numtype p2[])
   {
     p1[0] *= p2[0];
   }
@@ -359,7 +365,7 @@ template<class numtype>
 class taylor_inplace_multiplier<numtype, 1, 0, 0> // (4), last coefficient.
 {
  public:
-  static void mul(numtype p1[], const numtype p2[])
+  static void mul(numtype POLYMUL_RESTRICT p1[], const numtype p2[])
   {
     p1[0] *= p2[0];
   }
@@ -369,7 +375,7 @@ template<class numtype, int Ndeg>
 class taylor_inplace_multiplier<numtype, 1, Ndeg, 0> //Above code is only for Ndeg>1
 {
  public:
-  static void mul(numtype p1[], const numtype p2[])
+  static void mul(numtype POLYMUL_RESTRICT p1[], const numtype p2[])
   {
     p1[Ndeg] *= p2[0];
     for (int i=0;i<Ndeg;i++)
@@ -571,7 +577,7 @@ template<class numtype, int Nvar, int Ndeg>
 // User interface
 
 template<class numtype, int Nvar, int Ndeg1, int Ndeg2>
-  void polymul(polynomial<numtype, Nvar,Ndeg1+Ndeg2> &dst,
+  void polymul(polynomial<numtype, Nvar,Ndeg1+Ndeg2> & POLYMUL_RESTRICT dst,
 	       const polynomial<numtype, Nvar,Ndeg1> &p1,
 	       const polynomial<numtype, Nvar,Ndeg2> &p2)
 {
@@ -580,7 +586,7 @@ template<class numtype, int Nvar, int Ndeg1, int Ndeg2>
 }
 
 template<class numtype, int Nvar, int Ndeg>
-  void taylormul(polynomial<numtype, Nvar,Ndeg> &dst,
+  void taylormul(polynomial<numtype, Nvar,Ndeg> & POLYMUL_RESTRICT dst,
 		 const polynomial<numtype, Nvar,Ndeg> &p1,
 		 const polynomial<numtype, Nvar,Ndeg> &p2)
 {
@@ -589,7 +595,7 @@ template<class numtype, int Nvar, int Ndeg>
 }
 
 template<class numtype, int Nvar, int Ndeg>
-void taylormul(polynomial<numtype, Nvar,Ndeg> &p1,
+void taylormul(polynomial<numtype, Nvar,Ndeg> & POLYMUL_RESTRICT p1,
 	       const polynomial<numtype, Nvar,Ndeg> &p2)
 {
   polymul_internal::taylor_inplace_multiplier<numtype,Nvar,Ndeg,0>

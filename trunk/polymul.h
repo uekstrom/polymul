@@ -53,7 +53,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 // Some compilers implement the C99 restrict also in C++.
-#ifdef __GNUC__
+// Need to find a way to differentiate between newer g++ and
+// other compilers that define __GNUC__ (like Intel icc).
+#ifdef __GNUC_AND_NOT_ICC__
 #define POLYMUL_RESTRICT __restrict__
 #else
 #define POLYMUL_RESTRICT 

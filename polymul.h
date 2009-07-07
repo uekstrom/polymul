@@ -384,25 +384,25 @@ class taylor_inplace_multiplier<numtype, 1, Ndeg, 0> //Above code is only for Nd
   }
 };
 
-template<class numtype, int Nvar, int Ndeg>
+ template<class numtype, class vartype, int Nvar, int Ndeg>
 class polynomial_evaluator
 {
  public:
-  static numtype eval(const numtype p[], const numtype x[])
+  static vartype eval(const numtype p[], const vartype x[])
   {
-    return polynomial_evaluator<numtype,Nvar,Ndeg>
+    return polynomial_evaluator<numtype,vartype,Nvar,Ndeg>
       ::eval_monomial(p+binomial<Nvar+Ndeg-1,Ndeg-1>::value,x) +
-      polynomial_evaluator<numtype,Nvar,Ndeg-1>
+      polynomial_evaluator<numtype,vartype,Nvar,Ndeg-1>
       ::eval(p,x);
   }
 
   // Evaluate monomial in Nvar variables.
   // M(N,K) = x[0]*M(N-1,K) + M(N,K-1)
-  static numtype eval_monomial(const numtype p[], const numtype x[])
+  static vartype eval_monomial(const numtype p[], const vartype x[])
   {
-    return x[0]*polynomial_evaluator<numtype,Nvar,Ndeg-1>
+    return x[0]*polynomial_evaluator<numtype,vartype,Nvar,Ndeg-1>
       ::eval_monomial(p,x) +
-      polynomial_evaluator<numtype,Nvar-1,Ndeg>
+      polynomial_evaluator<numtype,vartype,Nvar-1,Ndeg>
       ::eval_monomial(p+binomial<Nvar+Ndeg-2,Ndeg-1>::value,
 		      x+1);
   }
@@ -415,37 +415,37 @@ class polynomial_evaluator
   1 [x] [y] x[x y] y^2
 
  */
-template<class numtype, int Ndeg>
-class polynomial_evaluator<numtype, 1, Ndeg>
+template<class numtype, class vartype, int Ndeg>
+class polynomial_evaluator<numtype, vartype, 1, Ndeg>
 {
  public:
   // a + bx + cx^2 = a + x(b + x(c))
-  static numtype eval(const numtype p[], const numtype x[])
+  static vartype eval(const numtype p[], const vartype x[])
   {
     // Horner scheme:
-    numtype sum = p[Ndeg];
+    vartype sum = p[Ndeg];
     for (int i=Ndeg-1;i>=0;i--)
       sum = sum*x[0] + p[i];
     return sum;
   }
-  static numtype eval_monomial(const numtype p[], const numtype x[])
+  static vartype eval_monomial(const numtype p[], const vartype x[])
   {
-    numtype xn = 1;
+    vartype xn = 1;
     for (int i=0;i<Ndeg;i++)
       xn *= x[0];
     return xn*p[0];
   }
 };
 
-template<class numtype, int Nvar>
-class polynomial_evaluator<numtype, Nvar, 0>
+template<class numtype, class vartype, int Nvar>
+class polynomial_evaluator<numtype, vartype, Nvar, 0>
 {
  public:
-  static numtype eval(const numtype p[], const numtype x[])
+  static vartype eval(const numtype p[], const vartype x[])
   {
     return p[0];
   }
-  static numtype eval_monomial(const numtype p[], const numtype x[])
+  static vartype eval_monomial(const numtype p[], const vartype x[])
   {
     return p[0];
   }
@@ -520,9 +520,10 @@ template<class numtype, int Nvar, int Ndeg>
     return idx;
   }
   // Evaluate the polynomial at x.
-  numtype eval(const numtype x[Nvar]) const
+  template<class vartype>
+  numtype eval(const vartype x[Nvar]) const
   {
-    return polymul_internal::polynomial_evaluator<numtype,Nvar,Ndeg>::
+    return polymul_internal::polynomial_evaluator<numtype,vartype,Nvar,Ndeg>::
       eval(c,x);
   }
 

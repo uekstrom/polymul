@@ -521,7 +521,7 @@ template<class numtype, int Nvar, int Ndeg>
   }
   // Evaluate the polynomial at x.
   template<class vartype>
-  numtype eval(const vartype x[Nvar]) const
+  vartype eval(const vartype x[Nvar]) const
   {
     return polymul_internal::polynomial_evaluator<numtype,vartype,Nvar,Ndeg>::
       eval(c,x);

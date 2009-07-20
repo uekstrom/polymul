@@ -75,19 +75,19 @@ struct binomial
 template <int n>
 struct binomial<n,n>
 {
-    enum { value = 1 };
+    enum { value = n > 0 ? 1 : 0 };
 };
 
 template <int n>
 struct binomial<n,0>
 {
-    enum { value = 1 };
+  enum { value = n > 0 ? 1 : 0 };
 };
 
 template <int k>
 struct binomial<0,k>
 {
-    enum { value = 1 };
+  enum { value = k > 0 ? 1 : 0 };
 };
 
 
@@ -137,6 +137,22 @@ class polynomial_multiplier
     assert(0 && " I am not supposed to be here..");
   }
 
+  static void antimul(const numtype dst[], numtype p1[], const numtype p2[])
+  { 
+    polynomial_multiplier<numtype,Nvar,Ndeg1,Ndeg2-1>::antimul(dst,p1,p2);
+    polynomial_multiplier<numtype,Nvar,Ndeg1,Ndeg2>
+      ::antimul_monomial(dst,p1,p2+binomial<Nvar+Ndeg2-1,Ndeg2-1>::value);
+  }
+  static void antimul_monomial(const numtype dst[], numtype p1[], const numtype m2[])
+  { 
+    polynomial_multiplier<numtype,Nvar-1,Ndeg1,Ndeg2>
+      ::antimul(dst+binomial<Nvar+Ndeg1+Ndeg2-1,Ndeg1+Ndeg2-1>::value,
+	    p1 +binomial<Nvar+Ndeg1-1,Ndeg1-1>::value,
+	    m2);
+    polynomial_multiplier<numtype,Nvar,Ndeg1-1,Ndeg2>
+      ::antimul_monomial(dst,p1,m2);
+  }
+
 };
 
 template<class numtype, int Ndeg1, int Ndeg2>
@@ -171,6 +187,18 @@ template<class numtype, int Ndeg1, int Ndeg2>
     for (int i=0;i<Ndeg1;i++)
       dst[i+Ndeg2] = m2[0]*p1[i];
   }
+
+  static void antimul(const numtype dst[], numtype p1[], const numtype p2[])
+  {
+    for (int i=0;i<=Ndeg1;i++)
+      for (int j=0;j<=Ndeg2;j++)
+	p1[i] += p2[j]*dst[i+j];
+  }
+  static void antimul_monomial(const numtype dst[], numtype p1[], const numtype m2[])
+  {
+    for (int i=0;i<=Ndeg1;i++)
+      p1[i] += m2[0]*dst[i+Ndeg2];
+  }
 };
 
 template<class numtype, int Nvar, int Ndeg2>
@@ -196,6 +224,16 @@ template<class numtype, int Nvar, int Ndeg2>
   {
     for (int i=binomial<Nvar+Ndeg2-1,Ndeg2-1>::value;i<binomial<Nvar+Ndeg2,Ndeg2>::value;i++)
       dst[i] = p1[0]*m2[i-binomial<Nvar+Ndeg2-1,Ndeg2-1>::value];
+  }
+  static void antimul(const numtype dst[], numtype p1[], const numtype p2[])
+  {
+    for (int i=0;i<binomial<Nvar+Ndeg2,Ndeg2>::value;i++)
+      p1[0] += dst[i]*p2[i];
+  }
+  static void antimul_monomial(const numtype dst[], numtype p1[], const numtype m2[])
+  {
+    for (int i=binomial<Nvar+Ndeg2-1,Ndeg2-1>::value;i<binomial<Nvar+Ndeg2,Ndeg2>::value;i++)
+      p1[0] += dst[i]*m2[i-binomial<Nvar+Ndeg2-1,Ndeg2-1>::value];
   }
 };
 
@@ -223,6 +261,16 @@ template<class numtype, int Ndeg2>
     for (int i=binomial<1+Ndeg2-1,Ndeg2-1>::value;i<binomial<1+Ndeg2,Ndeg2>::value;i++)
       dst[i] = p1[0]*m2[i-binomial<1+Ndeg2-1,Ndeg2-1>::value];
   }
+  static void antimul(const numtype dst[], numtype p1[], const numtype p2[])
+  {
+    for (int i=0;i<binomial<1+Ndeg2,Ndeg2>::value;i++)
+      p1[0] += dst[i]*p2[i];
+  }
+  static void antimul_monomial(const numtype dst[], numtype p1[], const numtype m2[])
+  {
+    for (int i=binomial<1+Ndeg2-1,Ndeg2-1>::value;i<binomial<1+Ndeg2,Ndeg2>::value;i++)
+      p1[0] += dst[i]*m2[i-binomial<1+Ndeg2-1,Ndeg2-1>::value];
+  }
 };
 
 template<class numtype, int Nvar, int Ndeg1>
@@ -249,6 +297,16 @@ template<class numtype, int Nvar, int Ndeg1>
     for (int i=0;i<binomial<Nvar+Ndeg1,Ndeg1>::value;i++)
       dst[i] = p1[i]*m2[0];
   }
+  static void antimul(const numtype dst[], numtype p1[], const numtype p2[])
+  {
+    for (int i=0;i<binomial<Nvar+Ndeg1,Ndeg1>::value;i++)
+      p1[i] += dst[i]*p2[0];
+  }
+  static void antimul_monomial(const numtype dst[], numtype p1[], const numtype m2[])
+  {
+    for (int i=0;i<binomial<Nvar+Ndeg1,Ndeg1>::value;i++)
+      p1[i] += dst[i]*m2[0];
+  }
 };
 
 template<class numtype, int Nvar>
@@ -270,6 +328,14 @@ template<class numtype, int Nvar>
   static void mul_monomial_set(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype m2[])
   {
     dst[0] = p1[0]*m2[0];
+  }
+  static void antimul(const numtype dst[], numtype p1[], const numtype p2[])
+  {
+    p1[0] += dst[0]*p2[0];
+  }
+  static void antimul_monomial(const numtype dst[], numtype p1[], const numtype m2[])
+  {
+    p1[0] += dst[0]*m2[0];
   }
 };
 
@@ -408,6 +474,68 @@ class polynomial_evaluator
       ::eval_monomial(p+binomial<Nvar+Ndeg-2,Ndeg-1>::value,
 		      x+1);
   }
+  // cn is the monomial Nvar,Ndeg, so 
+  // cp is the monomial Nvar,Ndeg-1
+  static void eval_terms_helper(vartype cn[], const vartype cp[], 
+				const vartype x[])
+  {
+    for (int i=0;i<binomial<Nvar+Ndeg-2,Ndeg-1>::value;i++)
+      cn[i] = cp[i]*x[0];
+    polynomial_evaluator<numtype,vartype,Nvar-1,Ndeg>
+      ::eval_terms_helper(cn+binomial<Nvar+Ndeg-2,Ndeg-1>::value,
+			  cp+binomial<Nvar+Ndeg-3,Ndeg-2>::value,
+			  x+1);
+  }
+  // Evaluate all terms in a Nvar,Ndeg polymomial, given
+  // the values of x1, x2 ..
+  static void eval_terms(vartype p[], const vartype x[])
+  {
+    polynomial_evaluator<numtype,vartype,Nvar,Ndeg-1>
+      ::eval_terms(p,x);
+    polynomial_evaluator<numtype,vartype,Nvar,Ndeg>
+      ::eval_terms_helper(p+binomial<Nvar+Ndeg-1,Ndeg-1>::value,
+			  p+binomial<Nvar+Ndeg-2,Ndeg-2>::value,
+			  x);
+  }
+};
+
+
+template<class numtype, class vartype, int Nvar>
+class polynomial_evaluator<numtype, vartype, Nvar, 1>
+{
+ public:
+  static vartype eval(const numtype p[], const vartype x[])
+  {
+    return polynomial_evaluator<numtype,vartype,Nvar,1>
+      ::eval_monomial(p+binomial<Nvar+1-1,1-1>::value,x) +
+      polynomial_evaluator<numtype,vartype,Nvar,1-1>
+      ::eval(p,x);
+  }
+
+  // Evaluate monomial in Nvar variables.
+  // M(N,K) = x[0]*M(N-1,K) + M(N,K-1)
+  static vartype eval_monomial(const numtype p[], const vartype x[])
+  {
+    return x[0]*polynomial_evaluator<numtype,vartype,Nvar,1-1>
+      ::eval_monomial(p,x) +
+      polynomial_evaluator<numtype,vartype,Nvar-1,1>
+      ::eval_monomial(p+binomial<Nvar+1-2,1-1>::value,
+		      x+1);
+  }
+  static void eval_terms_helper(vartype cn[], const vartype cp[], 
+				const vartype x[])
+  {
+    for (int i=0;i<Nvar;i++)
+      cn[i] = x[i];
+  }
+  // Evaluate all terms in a Nvar,1 polymomial, given
+  // the values of x1, x2 ..
+  static void eval_terms(vartype p[], const vartype x[])
+  {
+    p[0] = 1;
+    for (int i=0;i<Nvar;i++)
+      p[i+1] = x[i];
+  }
 };
 
 
@@ -432,10 +560,55 @@ class polynomial_evaluator<numtype, vartype, 1, Ndeg>
   }
   static vartype eval_monomial(const numtype p[], const vartype x[])
   {
-    vartype xn = 1;
-    for (int i=0;i<Ndeg;i++)
+    vartype xn = x[0];
+    for (int i=1;i<Ndeg;i++)
       xn *= x[0];
     return xn*p[0];
+  }
+  static void eval_terms_helper(vartype cn[], const vartype cp[], 
+				const vartype x[])
+  {
+    cn[0] = cp[0]*x[0];
+  }
+  static void eval_terms(vartype p[], const vartype x[])
+  {
+    p[0] = 1;
+    if (Ndeg>0)
+      p[1] = x[0];
+    for (int i=2;i<=Ndeg;i++)
+      p[i] = x[0]*p[i-1];
+  }
+};
+
+
+template<class numtype, class vartype>
+class polynomial_evaluator<numtype, vartype, 1, 1>
+{
+ public:
+  // a + bx + cx^2 = a + x(b + x(c))
+  static vartype eval(const numtype p[], const vartype x[])
+  {
+    // Horner scheme:
+    vartype sum = p[1];
+    for (int i=1-1;i>=0;i--)
+      sum = sum*x[0] + p[i];
+    return sum;
+  }
+  static vartype eval_monomial(const numtype p[], const vartype x[])
+  {
+    return x[0]*p[0];
+  }
+  static void eval_terms_helper(vartype cn[], const vartype cp[], 
+				const vartype x[])
+  {
+    cn[0] = cp[0]*x[0];
+  }
+  // Evaluate all terms in a 1,1 polymomial, given
+  // the values of x1, x2 ..
+  static void eval_terms(vartype p[], const vartype x[])
+  {
+    p[0] = 1;
+    p[1] = x[0];
   }
 };
 
@@ -451,7 +624,14 @@ class polynomial_evaluator<numtype, vartype, Nvar, 0>
   {
     return p[0];
   }
+  static void eval_terms_helper(vartype cn[], const vartype cp[], 
+				const vartype x[]) { assert(0 && "BUG"); }
+  static void eval_terms(vartype p[], const vartype x[])
+  {
+    p[0] = 1;
+  }
 };
+
 
 }
 // End of namespace polymul_internal
@@ -529,6 +709,18 @@ template<class numtype, int Nvar, int Ndeg>
       eval(c,x);
   }
 
+  template<class vartype>
+  vartype eval_new(const vartype x[Nvar]) const
+  {
+    polynomial<numtype,Nvar,Ndeg> terms;
+    polymul_internal::polynomial_evaluator<numtype,vartype,Nvar,Ndeg>
+      ::eval_terms(terms.c,x);    
+    vartype sum = c[0];
+    for (int i=1;i<this->size();i++)
+      sum += c[i]*terms[i];
+    return sum;
+  }
+
   numtype c[polymul_internal::binomial<Nvar+Ndeg,Ndeg>::value];
 
  protected:
@@ -603,6 +795,28 @@ void taylormul(polynomial<numtype, Nvar,Ndeg> & POLYMUL_RESTRICT p1,
 {
   polymul_internal::taylor_inplace_multiplier<numtype,Nvar,Ndeg,0>
     ::mul(p1.c,p2.c);
+}
+
+template<class numtype, int Nvar, int Ndeg>
+void polyterms(polynomial<numtype, Nvar,Ndeg> &p,
+	       const numtype x[])
+{
+  polymul_internal::polynomial_evaluator<numtype,numtype,Nvar,Ndeg>
+    ::eval_terms(p.c,x);
+}
+
+// Calculates p1 so that 
+// dot(P*p2,p3) = dot(P,p1) (P*p2 is polynomial multiplication,
+// dot means summing the product of all coefficients).
+template<class numtype, int Nvar, int Ndeg1, int Ndeg2>
+void polycontract(polynomial<numtype, Nvar,Ndeg1> &p1,
+		  const polynomial<numtype, Nvar,Ndeg2> &p2,
+		  const polynomial<numtype, Nvar,Ndeg1+Ndeg2> &p3)
+{
+  for (int i=0;i<p1.size();i++)
+    p1[i] = 0;
+  polymul_internal::polynomial_multiplier<numtype,Nvar,Ndeg1,Ndeg2>
+    ::antimul(p3.c,p1.c,p2.c);
 }
 
 #endif

@@ -1,9 +1,7 @@
 #include <iostream>
-#include <valarray>
-using namespace std;
 #include "polymul.h"
 
-
+using namespace std;
 
 template<class num, int Nvar, int Ndeg>
 void printpoly(ostream &dst, const polynomial<num,Nvar,Ndeg> &p)
@@ -19,6 +17,24 @@ void printpoly(ostream &dst, const polynomial<num,Nvar,Ndeg> &p)
     }
 }
 
+#ifdef __GNUC__NOT_ICC__
+// Test polynomials over gcc vectors
+typedef double v2d __attribute__ ((vector_size (16)));
+void gcc_vectest(void)
+{
+  v2d v0 = {0,0}, c0 = {1,2};
+  polynomial<v2d,2,2> p1,p2,pp;
+  for (int i=0;i<p1.size();i++)
+    {
+      p1[i] = v0;
+      p2[i] = v0;
+    }
+  p1[0] = c0;
+  p2[1] = c0;
+  taylormul(pp,p1,p2);
+}
+#endif
+
 int main(void)
 {
   int pp_good[] = 
@@ -28,6 +44,7 @@ int main(void)
      595, 238, 591, 1066, 849, 496};
 
   int eval_1d_x[] = {11,-13,17};
+  double eval_1d_x_double[] = {11,-13,17};
   int eval_1d_p[] = {3,5,-7};
   int eval_1d_px[] = {-789, -1245, -1935};
 
@@ -39,10 +56,10 @@ int main(void)
   for (int i=0;i<peval_1d.size();i++)
     peval_1d[i] = eval_1d_p[i];
   for (int i=0;i<3;i++)
-    if (peval_1d.eval(&eval_1d_x[i]) != eval_1d_px[i])
+    if (peval_1d.eval(&eval_1d_x_double[i]) != eval_1d_px[i])
       {
 	cout << "WARNING (polyval 1d), expected " << eval_1d_px[i] <<
-	  " got " << peval_1d.eval(&eval_1d_x[i]) << endl;
+	  " got " << peval_1d.eval(&eval_1d_x_double[i]) << endl;
       }
   
   // Multiplying
@@ -86,6 +103,48 @@ int main(void)
 	  cout <<  i << " "<< p1[i]<< " " << pt[i] << " WARNING (in-place)" << endl;
 	}
     }
+
+  // Test contraction
+  // dot with 1 2 3 ..
+  polynomial<int,3,4> pd;
+  polynomial<int,3,2> pd1;
+  for (int i=0;i<pd.size();i++)
+    pd[i] = i+1;
+  double dot1 = 0, dot2 = 0;
+  // Reuse p1 and p2 from above
+  polymul(pp,p1,p2);
+  for (int i=0;i<pp.size();i++)
+    dot1 += pp[i]*pd[i];
+  polycontract(pd1,p2,pd);
+  for (int i=0;i<p1.size();i++)
+    dot2 += p1[i]*pd1[i];
+  if (dot1 != dot2)
+    {
+      cout << "WARNING, in contraction: dot1 and dot2: " << dot1 << " " << dot2 << endl;
+    } 
+#if 0
+  //Eval terms
+  double ex[] = {2,3,5,1,1};
+  polynomial<double,5,5> pterms;
+  pterms.zero();
+  polyterms(pterms,ex);
+  cout << "Terms for x=2, y=3, z=5:\n";
+  printpoly(cout,pterms);
+#endif
+#ifdef BENCHMARK
+  // Eval bench
+  double sum = 0;
+  for (int i=0;i<1e7;i++)
+    {
+      ex[1] += i & 2;
+      sum += pterms.eval_new(ex);
+      sum /= (sum - 1);
+    }
+  cout << sum << endl;
+#endif
+#ifdef __GNUC__NOT_ICC__
+  gcc_vectest();
+#endif  
   cout << "If no warnings were printed above, then things are fine." << endl;
   cout << "Polynomial exponents and coefficients:\n";
   printpoly(cout,p1);

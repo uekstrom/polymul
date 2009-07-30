@@ -7,12 +7,12 @@ template<class num, int Nvar, int Ndeg>
 void printpoly(ostream &dst, const polynomial<num,Nvar,Ndeg> &p)
 {
   int exps[Nvar] = {0};
-  for (int i=0;i<p.size();i++)
+  for (int i=0;i<p.size;i++)
     {
       p.exponents(i,exps);
       for (int j=0;j<Nvar;j++)
 	cout << exps[j] << " ";
-      cout << p[i] << endl;
+      cout << " " << p[i] << endl;
       assert(i == p.term_index(exps));
     }
 }
@@ -24,7 +24,7 @@ void gcc_vectest(void)
 {
   v2d v0 = {0,0}, c0 = {1,2};
   polynomial<v2d,2,2> p1,p2,pp;
-  for (int i=0;i<p1.size();i++)
+  for (int i=0;i<p1.size;i++)
     {
       p1[i] = v0;
       p2[i] = v0;
@@ -34,6 +34,19 @@ void gcc_vectest(void)
   taylormul(pp,p1,p2);
 }
 #endif
+
+int fac(int n)
+{
+  assert(n>=0);
+  assert(n<13);
+  int f = 1;
+  while(n>1)
+    {
+      f *= n;
+      n--;
+    }
+  return f;
+}
 
 int main(void)
 {
@@ -53,7 +66,7 @@ int main(void)
 
   // Evaluating
   polynomial<int,1,2> peval_1d;
-  for (int i=0;i<peval_1d.size();i++)
+  for (int i=0;i<peval_1d.size;i++)
     peval_1d[i] = eval_1d_p[i];
   for (int i=0;i<3;i++)
     if (peval_1d.eval(&eval_1d_x_double[i]) != eval_1d_px[i])
@@ -65,13 +78,13 @@ int main(void)
   // Multiplying
   polynomial<int,3,2> p1, p2, pt;
   polynomial<int,3,4> pp(1);
-  for (int i=0;i<p1.size();i++)
+  for (int i=0;i<p1.size;i++)
     p1[i] = 7+i;
-  for (int i=0;i<p2.size();i++)
+  for (int i=0;i<p2.size;i++)
     p2[i] = i*i/2 - i;
   
   polymul(pp,p1,p2);
-  for (int i=0;i<pp.size();i++)
+  for (int i=0;i<pp.size;i++)
     {
       if (pp_good[i] != pp[i])
 	{
@@ -89,39 +102,60 @@ int main(void)
 
   //start of polymul result should match taylormul
   taylormul(pt,p2,p1);
-  for (int i=0;i<pt.size();i++)
+  for (int i=0;i<pt.size;i++)
     if (pt[i] != pp[i])
       {
 	cout << "WARNING (taylor vs poly): " <<  i << " "<< pp[i]<< " " << pt[i] <<endl;
       }
 
   taylormul(p1,p2);
-  for (int i=0;i<pt.size();i++)
+  for (int i=0;i<pt.size;i++)
     {
       if (p1[i] != pt[i])
 	{
 	  cout <<  i << " "<< p1[i]<< " " << pt[i] << " WARNING (in-place)" << endl;
 	}
     }
-
+  // taylormul with lower order p2
+  polynomial<int,4,5> pleft,ppadded(0),pcheck1,pcheck2;
+  polynomial<int,4,2> plower;
+  for (int i=0;i<plower.size;i++)
+    {
+      plower[i] = i+1;
+      ppadded[i] = plower[i];
+    }
+  for (int i=0;i<pleft.size;i++)
+    pleft[i] = 1-i+((i*i) % 9);
+  pcheck1 = pleft;
+  taylormul(pcheck1,ppadded);
+  pcheck2 = pleft;
+  taylormul(pcheck2,plower);
+  for (int i=0;i<pcheck1.size;i++)
+    {
+      if (pcheck1[i] != pcheck2[i])
+	cout << "taylormul lower order error at " << i << ", expected " 
+	     << pcheck1[i] << " got " << pcheck2[i] << endl;
+    }
+  
   // Test contraction
   // dot with 1 2 3 ..
   polynomial<int,3,4> pd;
   polynomial<int,3,2> pd1;
-  for (int i=0;i<pd.size();i++)
+  for (int i=0;i<pd.size;i++)
     pd[i] = i+1;
   double dot1 = 0, dot2 = 0;
   // Reuse p1 and p2 from above
   polymul(pp,p1,p2);
-  for (int i=0;i<pp.size();i++)
+  for (int i=0;i<pp.size;i++)
     dot1 += pp[i]*pd[i];
   polycontract(pd1,p2,pd);
-  for (int i=0;i<p1.size();i++)
+  for (int i=0;i<p1.size;i++)
     dot2 += p1[i]*pd1[i];
   if (dot1 != dot2)
     {
       cout << "WARNING, in contraction: dot1 and dot2: " << dot1 << " " << dot2 << endl;
-    } 
+    }
+
 #if 0
   //Eval terms
   double ex[] = {2,3,5,1,1};

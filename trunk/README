@@ -1,0 +1,5 @@
+Fast multivariate polynomial multiplication in C++,
+by Ulf Ekström <uekstrom@gmail.com> 2009. See 
+polymul.h for license, and polymul.googlecode.com 
+for documentation and the latest version of this
+library.

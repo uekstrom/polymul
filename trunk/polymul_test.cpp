@@ -91,6 +91,12 @@ int main(void)
 	  cout << "WARNING (known good vs polymul): " <<  i << " "<< pp_good[i]<< " " << pp[i] <<endl;
 	}
     }
+  // Is term_prod correct?
+  if (polymul_internal::term_prod<3,1,2>::prod != 5)
+    cout << "WARNING: term_prod<3,1,2> incorrect = " << polymul_internal::term_prod<3,1,2>::prod << endl;
+  if (polymul_internal::term_prod<3,3,3>::prod != 9)
+    cout << "WARNING: term_prod<3,3,3> incorrect = " << polymul_internal::term_prod<3,3,3>::prod << endl;
+
   // Check that multiply then eval gives the same as eval then multiply
   int x1[3] = {12,-1,7};
   int x2[3] = {-4,3,1};
@@ -155,6 +161,25 @@ int main(void)
     {
       cout << "WARNING, in contraction: dot1 and dot2: " << dot1 << " " << dot2 << endl;
     }
+
+  if (polymul_internal::term_deg<3,4>::deg != 2 or
+      polymul_internal::term_deg<2,6>::deg != 3)
+    {
+      cerr << "WARNING, error in term_deg<>" << endl;
+    }
+  // Sparse (single term) multiply
+  p1 = 0;
+  p2 = 0;
+  p1[2] = 3;
+  p2[4] = 7;
+  polymul(pp,p1,p2);
+  polynomial<int,3,4> ppz;
+  ppz = 0;
+  polymul_term<int,3,2,4>(ppz,p1,7);
+  for (int i=0;i<ppz.size;i++)
+    if (pp[i] != ppz[i])
+      cout << "WARNING: single term multiply failed at " << i << endl;
+
 
 #if 0
   //Eval terms

@@ -942,7 +942,7 @@ struct transformer
 	dst[i] += src[term]*tmp[i];
 		    
     transformer<numtype,Nvar_dst,Nvar_src,Ndeg,J,N+1, 
-      term_prod<Nvar_dst,J+1,term>::prod>::trans(tmp,dst,src,T);
+      term_prod<Nvar_src,J+1,term>::prod>::trans(tmp,dst,src,T);
     transformer<numtype,Nvar_dst,Nvar_src,Ndeg,J+1,N,term+1>
       ::trans(tmp,dst,src,T);
 
@@ -1004,7 +1004,7 @@ struct transformer<numtype,Nvar_dst,Nvar_src,Ndeg,J,1,term>
 	dst[i] += src[term]*tmp[i];
     
     transformer<numtype,Nvar_dst,Nvar_src,Ndeg,J,2, 
-      term_prod<Nvar_dst,J+1,term>::prod>::trans(tmp,dst,src,T);
+      term_prod<Nvar_src,J+1,term>::prod>::trans(tmp,dst,src,T);
     transformer<numtype,Nvar_dst,Nvar_src,Ndeg,J+1,1,term+1>
       ::trans(tmp,dst,src,T);
   }

@@ -68,6 +68,18 @@ void test_polytrans(void)
     if (fabs(p1[i] - p3[i]) > 1e-12)
       cout << "WARNING: trans component " << i << " error: " <<
 	p1[i] - p3[i] << endl;
+  polynomial<int,2,2> pi;
+  polynomial<int,1,2> pit;
+  for (int i=0;i<pi.size;i++)
+    pi[i] = 1 + i;
+  int Ti[2] = {7,11};
+  polytrans(pit,pi,Ti);
+  
+  if (pit[0] != 1 or pit[1] != 47 or pit[2] != 1307)
+    {
+      cout << "WARNING: Integer polytrans failed" << endl;
+      printpoly(cout,pit);
+    }
 }
 
 int fac(int n)

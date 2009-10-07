@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 #include "polymul.h"
 
 using namespace std;
@@ -34,6 +35,40 @@ void gcc_vectest(void)
   taylormul(pp,p1,p2);
 }
 #endif
+
+void test_polytrans(void)
+{
+  double T[9] = 
+    { 0.89345204101734266,
+      -0.13515256248569177,
+      0.42834242756875696,
+      -0.00419726950436077,
+      0.95110128878672862,
+      0.30885064577709997,
+      -0.44913899110481653,
+      -0.27774110844773253,
+      0.84919611595177014, };
+  double Tinv[9] = 
+    { 
+      0.89345204101734266,
+      -0.00419726950436077,
+      -0.44913899110481653,
+      -0.13515256248569177,
+      0.95110128878672862,
+      -0.27774110844773253,
+      0.42834242756875696,
+      0.30885064577709997,
+      0.84919611595177014 };
+  polynomial<double,3,5> p1,p2,p3;
+  for (int i=0;i<p1.size;i++)
+    p1[i] = i + 1;
+  polytrans(p2,p1,T);
+  polytrans(p3,p2,Tinv);
+  for (int i=0;i<p1.size;i++)
+    if (fabs(p1[i] - p3[i]) > 1e-12)
+      cout << "WARNING: trans component " << i << " error: " <<
+	p1[i] - p3[i] << endl;
+}
 
 int fac(int n)
 {
@@ -180,7 +215,7 @@ int main(void)
     if (pp[i] != ppz[i])
       cout << "WARNING: single term multiply failed at " << i << endl;
 
-
+  test_polytrans();
 #if 0
   //Eval terms
   double ex[] = {2,3,5,1,1};

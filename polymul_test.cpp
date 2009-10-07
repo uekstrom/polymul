@@ -61,7 +61,7 @@ void test_polytrans(void)
       0.84919611595177014 };
   polynomial<double,3,5> p1,p2,p3;
   for (int i=0;i<p1.size;i++)
-    p1[i] = i + 1;
+    p1[i] = i + 2;
   polytrans(p2,p1,T);
   polytrans(p3,p2,Tinv);
   for (int i=0;i<p1.size;i++)

@@ -528,6 +528,35 @@ template<class numtype, int Nvar>
   }
 };
 
+template<class numtype>
+  struct polynomial_multiplier<numtype, 1, 0, 0>
+{
+  static void mul(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype p2[])
+  {
+    dst[0] += p1[0]*p2[0];
+  }
+  static void mul_monomial(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype m2[])
+  {
+    dst[0] += p1[0]*m2[0];
+  }
+  static void mul_set(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype p2[])
+  {
+    dst[0] = p1[0]*p2[0];
+  }
+  static void mul_monomial_set(numtype POLYMUL_RESTRICT dst[], const numtype p1[], const numtype m2[])
+  {
+    dst[0] = p1[0]*m2[0];
+  }
+  static void antimul(const numtype dst[], numtype p1[], const numtype p2[])
+  {
+    p1[0] += dst[0]*p2[0];
+  }
+  static void antimul_monomial(const numtype dst[], numtype p1[], const numtype m2[])
+  {
+    p1[0] += dst[0]*m2[0];
+  }
+};
+
 
 // Like polymul but truncates the result to Ndeg1 order.
 // Ndeg2 _must_ be less or equal to Ndeg1, otherwise the recursion

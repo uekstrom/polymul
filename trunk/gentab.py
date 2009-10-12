@@ -133,11 +133,18 @@ struct polynomial_multiplier<numtype, %i, %i, %i>
             print "    dst[%i] =" % k," + ".join(pk),";"
     print """  }
   static void antimul(const numtype dst[], numtype p1[], const numtype p2[])
-  { 
-  }
+  { """
+    for k in range(len(terms1)):
+        pk = ["dst[%i]*p2[%i]" % (p[0],p[2]) for p in prods if p[1] == k]
+        print "    p1[%i] +=" % k," + ".join(pk),";"
+    print """  }
   static void antimul_monomial(const numtype dst[], numtype p1[], const numtype m2[])
-  {
-  }    
+  { """
+    for k in range(len(terms1)):
+        pk = ["dst[%i]*m2[%i]" % (p[0],p[2]) for p in mon_prods if p[1] == k]
+        if len(pk) > 0:
+            print "    p1[%i] +=" % k," + ".join(pk),";"
+    print """  }
 };"""
     return True
 

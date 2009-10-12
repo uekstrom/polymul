@@ -52,10 +52,14 @@ struct polynomial_multiplier<numtype, 1, 1, 1>
   }
   static void antimul(const numtype dst[], numtype p1[], const numtype p2[])
   { 
+    p1[0] += dst[0]*p2[0] + dst[1]*p2[1] ;
+    p1[1] += dst[1]*p2[0] + dst[2]*p2[1] ;
   }
   static void antimul_monomial(const numtype dst[], numtype p1[], const numtype m2[])
-  {
-  }    
+  { 
+    p1[0] += dst[1]*m2[0] ;
+    p1[1] += dst[2]*m2[0] ;
+  }
 };
 
 template<class numtype>
@@ -119,10 +123,16 @@ struct polynomial_multiplier<numtype, 1, 2, 2>
   }
   static void antimul(const numtype dst[], numtype p1[], const numtype p2[])
   { 
+    p1[0] += dst[0]*p2[0] + dst[1]*p2[1] + dst[2]*p2[2] ;
+    p1[1] += dst[1]*p2[0] + dst[2]*p2[1] + dst[3]*p2[2] ;
+    p1[2] += dst[2]*p2[0] + dst[3]*p2[1] + dst[4]*p2[2] ;
   }
   static void antimul_monomial(const numtype dst[], numtype p1[], const numtype m2[])
-  {
-  }    
+  { 
+    p1[0] += dst[2]*m2[0] ;
+    p1[1] += dst[3]*m2[0] ;
+    p1[2] += dst[4]*m2[0] ;
+  }
 };
 
 template<class numtype>
@@ -195,10 +205,18 @@ struct polynomial_multiplier<numtype, 1, 3, 3>
   }
   static void antimul(const numtype dst[], numtype p1[], const numtype p2[])
   { 
+    p1[0] += dst[0]*p2[0] + dst[1]*p2[1] + dst[2]*p2[2] + dst[3]*p2[3] ;
+    p1[1] += dst[1]*p2[0] + dst[2]*p2[1] + dst[3]*p2[2] + dst[4]*p2[3] ;
+    p1[2] += dst[2]*p2[0] + dst[3]*p2[1] + dst[4]*p2[2] + dst[5]*p2[3] ;
+    p1[3] += dst[3]*p2[0] + dst[4]*p2[1] + dst[5]*p2[2] + dst[6]*p2[3] ;
   }
   static void antimul_monomial(const numtype dst[], numtype p1[], const numtype m2[])
-  {
-  }    
+  { 
+    p1[0] += dst[3]*m2[0] ;
+    p1[1] += dst[4]*m2[0] ;
+    p1[2] += dst[5]*m2[0] ;
+    p1[3] += dst[6]*m2[0] ;
+  }
 };
 
 template<class numtype>
@@ -280,10 +298,20 @@ struct polynomial_multiplier<numtype, 1, 4, 4>
   }
   static void antimul(const numtype dst[], numtype p1[], const numtype p2[])
   { 
+    p1[0] += dst[0]*p2[0] + dst[1]*p2[1] + dst[2]*p2[2] + dst[3]*p2[3] + dst[4]*p2[4] ;
+    p1[1] += dst[1]*p2[0] + dst[2]*p2[1] + dst[3]*p2[2] + dst[4]*p2[3] + dst[5]*p2[4] ;
+    p1[2] += dst[2]*p2[0] + dst[3]*p2[1] + dst[4]*p2[2] + dst[5]*p2[3] + dst[6]*p2[4] ;
+    p1[3] += dst[3]*p2[0] + dst[4]*p2[1] + dst[5]*p2[2] + dst[6]*p2[3] + dst[7]*p2[4] ;
+    p1[4] += dst[4]*p2[0] + dst[5]*p2[1] + dst[6]*p2[2] + dst[7]*p2[3] + dst[8]*p2[4] ;
   }
   static void antimul_monomial(const numtype dst[], numtype p1[], const numtype m2[])
-  {
-  }    
+  { 
+    p1[0] += dst[4]*m2[0] ;
+    p1[1] += dst[5]*m2[0] ;
+    p1[2] += dst[6]*m2[0] ;
+    p1[3] += dst[7]*m2[0] ;
+    p1[4] += dst[8]*m2[0] ;
+  }
 };
 
 template<class numtype>
@@ -353,10 +381,16 @@ struct polynomial_multiplier<numtype, 2, 1, 1>
   }
   static void antimul(const numtype dst[], numtype p1[], const numtype p2[])
   { 
+    p1[0] += dst[0]*p2[0] + dst[1]*p2[1] + dst[2]*p2[2] ;
+    p1[1] += dst[1]*p2[0] + dst[3]*p2[1] + dst[4]*p2[2] ;
+    p1[2] += dst[2]*p2[0] + dst[4]*p2[1] + dst[5]*p2[2] ;
   }
   static void antimul_monomial(const numtype dst[], numtype p1[], const numtype m2[])
-  {
-  }    
+  { 
+    p1[0] += dst[1]*m2[0] + dst[2]*m2[1] ;
+    p1[1] += dst[3]*m2[0] + dst[4]*m2[1] ;
+    p1[2] += dst[4]*m2[0] + dst[5]*m2[1] ;
+  }
 };
 
 template<class numtype>
@@ -467,10 +501,22 @@ struct polynomial_multiplier<numtype, 2, 2, 2>
   }
   static void antimul(const numtype dst[], numtype p1[], const numtype p2[])
   { 
+    p1[0] += dst[0]*p2[0] + dst[1]*p2[1] + dst[2]*p2[2] + dst[3]*p2[3] + dst[4]*p2[4] + dst[5]*p2[5] ;
+    p1[1] += dst[1]*p2[0] + dst[3]*p2[1] + dst[4]*p2[2] + dst[6]*p2[3] + dst[7]*p2[4] + dst[8]*p2[5] ;
+    p1[2] += dst[2]*p2[0] + dst[4]*p2[1] + dst[5]*p2[2] + dst[7]*p2[3] + dst[8]*p2[4] + dst[9]*p2[5] ;
+    p1[3] += dst[3]*p2[0] + dst[6]*p2[1] + dst[7]*p2[2] + dst[10]*p2[3] + dst[11]*p2[4] + dst[12]*p2[5] ;
+    p1[4] += dst[4]*p2[0] + dst[7]*p2[1] + dst[8]*p2[2] + dst[11]*p2[3] + dst[12]*p2[4] + dst[13]*p2[5] ;
+    p1[5] += dst[5]*p2[0] + dst[8]*p2[1] + dst[9]*p2[2] + dst[12]*p2[3] + dst[13]*p2[4] + dst[14]*p2[5] ;
   }
   static void antimul_monomial(const numtype dst[], numtype p1[], const numtype m2[])
-  {
-  }    
+  { 
+    p1[0] += dst[3]*m2[0] + dst[4]*m2[1] + dst[5]*m2[2] ;
+    p1[1] += dst[6]*m2[0] + dst[7]*m2[1] + dst[8]*m2[2] ;
+    p1[2] += dst[7]*m2[0] + dst[8]*m2[1] + dst[9]*m2[2] ;
+    p1[3] += dst[10]*m2[0] + dst[11]*m2[1] + dst[12]*m2[2] ;
+    p1[4] += dst[11]*m2[0] + dst[12]*m2[1] + dst[13]*m2[2] ;
+    p1[5] += dst[12]*m2[0] + dst[13]*m2[1] + dst[14]*m2[2] ;
+  }
 };
 
 template<class numtype>
@@ -639,10 +685,30 @@ struct polynomial_multiplier<numtype, 2, 3, 3>
   }
   static void antimul(const numtype dst[], numtype p1[], const numtype p2[])
   { 
+    p1[0] += dst[0]*p2[0] + dst[1]*p2[1] + dst[2]*p2[2] + dst[3]*p2[3] + dst[4]*p2[4] + dst[5]*p2[5] + dst[6]*p2[6] + dst[7]*p2[7] + dst[8]*p2[8] + dst[9]*p2[9] ;
+    p1[1] += dst[1]*p2[0] + dst[3]*p2[1] + dst[4]*p2[2] + dst[6]*p2[3] + dst[7]*p2[4] + dst[8]*p2[5] + dst[10]*p2[6] + dst[11]*p2[7] + dst[12]*p2[8] + dst[13]*p2[9] ;
+    p1[2] += dst[2]*p2[0] + dst[4]*p2[1] + dst[5]*p2[2] + dst[7]*p2[3] + dst[8]*p2[4] + dst[9]*p2[5] + dst[11]*p2[6] + dst[12]*p2[7] + dst[13]*p2[8] + dst[14]*p2[9] ;
+    p1[3] += dst[3]*p2[0] + dst[6]*p2[1] + dst[7]*p2[2] + dst[10]*p2[3] + dst[11]*p2[4] + dst[12]*p2[5] + dst[15]*p2[6] + dst[16]*p2[7] + dst[17]*p2[8] + dst[18]*p2[9] ;
+    p1[4] += dst[4]*p2[0] + dst[7]*p2[1] + dst[8]*p2[2] + dst[11]*p2[3] + dst[12]*p2[4] + dst[13]*p2[5] + dst[16]*p2[6] + dst[17]*p2[7] + dst[18]*p2[8] + dst[19]*p2[9] ;
+    p1[5] += dst[5]*p2[0] + dst[8]*p2[1] + dst[9]*p2[2] + dst[12]*p2[3] + dst[13]*p2[4] + dst[14]*p2[5] + dst[17]*p2[6] + dst[18]*p2[7] + dst[19]*p2[8] + dst[20]*p2[9] ;
+    p1[6] += dst[6]*p2[0] + dst[10]*p2[1] + dst[11]*p2[2] + dst[15]*p2[3] + dst[16]*p2[4] + dst[17]*p2[5] + dst[21]*p2[6] + dst[22]*p2[7] + dst[23]*p2[8] + dst[24]*p2[9] ;
+    p1[7] += dst[7]*p2[0] + dst[11]*p2[1] + dst[12]*p2[2] + dst[16]*p2[3] + dst[17]*p2[4] + dst[18]*p2[5] + dst[22]*p2[6] + dst[23]*p2[7] + dst[24]*p2[8] + dst[25]*p2[9] ;
+    p1[8] += dst[8]*p2[0] + dst[12]*p2[1] + dst[13]*p2[2] + dst[17]*p2[3] + dst[18]*p2[4] + dst[19]*p2[5] + dst[23]*p2[6] + dst[24]*p2[7] + dst[25]*p2[8] + dst[26]*p2[9] ;
+    p1[9] += dst[9]*p2[0] + dst[13]*p2[1] + dst[14]*p2[2] + dst[18]*p2[3] + dst[19]*p2[4] + dst[20]*p2[5] + dst[24]*p2[6] + dst[25]*p2[7] + dst[26]*p2[8] + dst[27]*p2[9] ;
   }
   static void antimul_monomial(const numtype dst[], numtype p1[], const numtype m2[])
-  {
-  }    
+  { 
+    p1[0] += dst[6]*m2[0] + dst[7]*m2[1] + dst[8]*m2[2] + dst[9]*m2[3] ;
+    p1[1] += dst[10]*m2[0] + dst[11]*m2[1] + dst[12]*m2[2] + dst[13]*m2[3] ;
+    p1[2] += dst[11]*m2[0] + dst[12]*m2[1] + dst[13]*m2[2] + dst[14]*m2[3] ;
+    p1[3] += dst[15]*m2[0] + dst[16]*m2[1] + dst[17]*m2[2] + dst[18]*m2[3] ;
+    p1[4] += dst[16]*m2[0] + dst[17]*m2[1] + dst[18]*m2[2] + dst[19]*m2[3] ;
+    p1[5] += dst[17]*m2[0] + dst[18]*m2[1] + dst[19]*m2[2] + dst[20]*m2[3] ;
+    p1[6] += dst[21]*m2[0] + dst[22]*m2[1] + dst[23]*m2[2] + dst[24]*m2[3] ;
+    p1[7] += dst[22]*m2[0] + dst[23]*m2[1] + dst[24]*m2[2] + dst[25]*m2[3] ;
+    p1[8] += dst[23]*m2[0] + dst[24]*m2[1] + dst[25]*m2[2] + dst[26]*m2[3] ;
+    p1[9] += dst[24]*m2[0] + dst[25]*m2[1] + dst[26]*m2[2] + dst[27]*m2[3] ;
+  }
 };
 
 template<class numtype>
@@ -886,10 +952,40 @@ struct polynomial_multiplier<numtype, 2, 4, 4>
   }
   static void antimul(const numtype dst[], numtype p1[], const numtype p2[])
   { 
+    p1[0] += dst[0]*p2[0] + dst[1]*p2[1] + dst[2]*p2[2] + dst[3]*p2[3] + dst[4]*p2[4] + dst[5]*p2[5] + dst[6]*p2[6] + dst[7]*p2[7] + dst[8]*p2[8] + dst[9]*p2[9] + dst[10]*p2[10] + dst[11]*p2[11] + dst[12]*p2[12] + dst[13]*p2[13] + dst[14]*p2[14] ;
+    p1[1] += dst[1]*p2[0] + dst[3]*p2[1] + dst[4]*p2[2] + dst[6]*p2[3] + dst[7]*p2[4] + dst[8]*p2[5] + dst[10]*p2[6] + dst[11]*p2[7] + dst[12]*p2[8] + dst[13]*p2[9] + dst[15]*p2[10] + dst[16]*p2[11] + dst[17]*p2[12] + dst[18]*p2[13] + dst[19]*p2[14] ;
+    p1[2] += dst[2]*p2[0] + dst[4]*p2[1] + dst[5]*p2[2] + dst[7]*p2[3] + dst[8]*p2[4] + dst[9]*p2[5] + dst[11]*p2[6] + dst[12]*p2[7] + dst[13]*p2[8] + dst[14]*p2[9] + dst[16]*p2[10] + dst[17]*p2[11] + dst[18]*p2[12] + dst[19]*p2[13] + dst[20]*p2[14] ;
+    p1[3] += dst[3]*p2[0] + dst[6]*p2[1] + dst[7]*p2[2] + dst[10]*p2[3] + dst[11]*p2[4] + dst[12]*p2[5] + dst[15]*p2[6] + dst[16]*p2[7] + dst[17]*p2[8] + dst[18]*p2[9] + dst[21]*p2[10] + dst[22]*p2[11] + dst[23]*p2[12] + dst[24]*p2[13] + dst[25]*p2[14] ;
+    p1[4] += dst[4]*p2[0] + dst[7]*p2[1] + dst[8]*p2[2] + dst[11]*p2[3] + dst[12]*p2[4] + dst[13]*p2[5] + dst[16]*p2[6] + dst[17]*p2[7] + dst[18]*p2[8] + dst[19]*p2[9] + dst[22]*p2[10] + dst[23]*p2[11] + dst[24]*p2[12] + dst[25]*p2[13] + dst[26]*p2[14] ;
+    p1[5] += dst[5]*p2[0] + dst[8]*p2[1] + dst[9]*p2[2] + dst[12]*p2[3] + dst[13]*p2[4] + dst[14]*p2[5] + dst[17]*p2[6] + dst[18]*p2[7] + dst[19]*p2[8] + dst[20]*p2[9] + dst[23]*p2[10] + dst[24]*p2[11] + dst[25]*p2[12] + dst[26]*p2[13] + dst[27]*p2[14] ;
+    p1[6] += dst[6]*p2[0] + dst[10]*p2[1] + dst[11]*p2[2] + dst[15]*p2[3] + dst[16]*p2[4] + dst[17]*p2[5] + dst[21]*p2[6] + dst[22]*p2[7] + dst[23]*p2[8] + dst[24]*p2[9] + dst[28]*p2[10] + dst[29]*p2[11] + dst[30]*p2[12] + dst[31]*p2[13] + dst[32]*p2[14] ;
+    p1[7] += dst[7]*p2[0] + dst[11]*p2[1] + dst[12]*p2[2] + dst[16]*p2[3] + dst[17]*p2[4] + dst[18]*p2[5] + dst[22]*p2[6] + dst[23]*p2[7] + dst[24]*p2[8] + dst[25]*p2[9] + dst[29]*p2[10] + dst[30]*p2[11] + dst[31]*p2[12] + dst[32]*p2[13] + dst[33]*p2[14] ;
+    p1[8] += dst[8]*p2[0] + dst[12]*p2[1] + dst[13]*p2[2] + dst[17]*p2[3] + dst[18]*p2[4] + dst[19]*p2[5] + dst[23]*p2[6] + dst[24]*p2[7] + dst[25]*p2[8] + dst[26]*p2[9] + dst[30]*p2[10] + dst[31]*p2[11] + dst[32]*p2[12] + dst[33]*p2[13] + dst[34]*p2[14] ;
+    p1[9] += dst[9]*p2[0] + dst[13]*p2[1] + dst[14]*p2[2] + dst[18]*p2[3] + dst[19]*p2[4] + dst[20]*p2[5] + dst[24]*p2[6] + dst[25]*p2[7] + dst[26]*p2[8] + dst[27]*p2[9] + dst[31]*p2[10] + dst[32]*p2[11] + dst[33]*p2[12] + dst[34]*p2[13] + dst[35]*p2[14] ;
+    p1[10] += dst[10]*p2[0] + dst[15]*p2[1] + dst[16]*p2[2] + dst[21]*p2[3] + dst[22]*p2[4] + dst[23]*p2[5] + dst[28]*p2[6] + dst[29]*p2[7] + dst[30]*p2[8] + dst[31]*p2[9] + dst[36]*p2[10] + dst[37]*p2[11] + dst[38]*p2[12] + dst[39]*p2[13] + dst[40]*p2[14] ;
+    p1[11] += dst[11]*p2[0] + dst[16]*p2[1] + dst[17]*p2[2] + dst[22]*p2[3] + dst[23]*p2[4] + dst[24]*p2[5] + dst[29]*p2[6] + dst[30]*p2[7] + dst[31]*p2[8] + dst[32]*p2[9] + dst[37]*p2[10] + dst[38]*p2[11] + dst[39]*p2[12] + dst[40]*p2[13] + dst[41]*p2[14] ;
+    p1[12] += dst[12]*p2[0] + dst[17]*p2[1] + dst[18]*p2[2] + dst[23]*p2[3] + dst[24]*p2[4] + dst[25]*p2[5] + dst[30]*p2[6] + dst[31]*p2[7] + dst[32]*p2[8] + dst[33]*p2[9] + dst[38]*p2[10] + dst[39]*p2[11] + dst[40]*p2[12] + dst[41]*p2[13] + dst[42]*p2[14] ;
+    p1[13] += dst[13]*p2[0] + dst[18]*p2[1] + dst[19]*p2[2] + dst[24]*p2[3] + dst[25]*p2[4] + dst[26]*p2[5] + dst[31]*p2[6] + dst[32]*p2[7] + dst[33]*p2[8] + dst[34]*p2[9] + dst[39]*p2[10] + dst[40]*p2[11] + dst[41]*p2[12] + dst[42]*p2[13] + dst[43]*p2[14] ;
+    p1[14] += dst[14]*p2[0] + dst[19]*p2[1] + dst[20]*p2[2] + dst[25]*p2[3] + dst[26]*p2[4] + dst[27]*p2[5] + dst[32]*p2[6] + dst[33]*p2[7] + dst[34]*p2[8] + dst[35]*p2[9] + dst[40]*p2[10] + dst[41]*p2[11] + dst[42]*p2[12] + dst[43]*p2[13] + dst[44]*p2[14] ;
   }
   static void antimul_monomial(const numtype dst[], numtype p1[], const numtype m2[])
-  {
-  }    
+  { 
+    p1[0] += dst[10]*m2[0] + dst[11]*m2[1] + dst[12]*m2[2] + dst[13]*m2[3] + dst[14]*m2[4] ;
+    p1[1] += dst[15]*m2[0] + dst[16]*m2[1] + dst[17]*m2[2] + dst[18]*m2[3] + dst[19]*m2[4] ;
+    p1[2] += dst[16]*m2[0] + dst[17]*m2[1] + dst[18]*m2[2] + dst[19]*m2[3] + dst[20]*m2[4] ;
+    p1[3] += dst[21]*m2[0] + dst[22]*m2[1] + dst[23]*m2[2] + dst[24]*m2[3] + dst[25]*m2[4] ;
+    p1[4] += dst[22]*m2[0] + dst[23]*m2[1] + dst[24]*m2[2] + dst[25]*m2[3] + dst[26]*m2[4] ;
+    p1[5] += dst[23]*m2[0] + dst[24]*m2[1] + dst[25]*m2[2] + dst[26]*m2[3] + dst[27]*m2[4] ;
+    p1[6] += dst[28]*m2[0] + dst[29]*m2[1] + dst[30]*m2[2] + dst[31]*m2[3] + dst[32]*m2[4] ;
+    p1[7] += dst[29]*m2[0] + dst[30]*m2[1] + dst[31]*m2[2] + dst[32]*m2[3] + dst[33]*m2[4] ;
+    p1[8] += dst[30]*m2[0] + dst[31]*m2[1] + dst[32]*m2[2] + dst[33]*m2[3] + dst[34]*m2[4] ;
+    p1[9] += dst[31]*m2[0] + dst[32]*m2[1] + dst[33]*m2[2] + dst[34]*m2[3] + dst[35]*m2[4] ;
+    p1[10] += dst[36]*m2[0] + dst[37]*m2[1] + dst[38]*m2[2] + dst[39]*m2[3] + dst[40]*m2[4] ;
+    p1[11] += dst[37]*m2[0] + dst[38]*m2[1] + dst[39]*m2[2] + dst[40]*m2[3] + dst[41]*m2[4] ;
+    p1[12] += dst[38]*m2[0] + dst[39]*m2[1] + dst[40]*m2[2] + dst[41]*m2[3] + dst[42]*m2[4] ;
+    p1[13] += dst[39]*m2[0] + dst[40]*m2[1] + dst[41]*m2[2] + dst[42]*m2[3] + dst[43]*m2[4] ;
+    p1[14] += dst[40]*m2[0] + dst[41]*m2[1] + dst[42]*m2[2] + dst[43]*m2[3] + dst[44]*m2[4] ;
+  }
 };
 
 template<class numtype>
@@ -978,10 +1074,18 @@ struct polynomial_multiplier<numtype, 3, 1, 1>
   }
   static void antimul(const numtype dst[], numtype p1[], const numtype p2[])
   { 
+    p1[0] += dst[0]*p2[0] + dst[1]*p2[1] + dst[2]*p2[2] + dst[3]*p2[3] ;
+    p1[1] += dst[1]*p2[0] + dst[4]*p2[1] + dst[5]*p2[2] + dst[6]*p2[3] ;
+    p1[2] += dst[2]*p2[0] + dst[5]*p2[1] + dst[7]*p2[2] + dst[8]*p2[3] ;
+    p1[3] += dst[3]*p2[0] + dst[6]*p2[1] + dst[8]*p2[2] + dst[9]*p2[3] ;
   }
   static void antimul_monomial(const numtype dst[], numtype p1[], const numtype m2[])
-  {
-  }    
+  { 
+    p1[0] += dst[1]*m2[0] + dst[2]*m2[1] + dst[3]*m2[2] ;
+    p1[1] += dst[4]*m2[0] + dst[5]*m2[1] + dst[6]*m2[2] ;
+    p1[2] += dst[5]*m2[0] + dst[7]*m2[1] + dst[8]*m2[2] ;
+    p1[3] += dst[6]*m2[0] + dst[8]*m2[1] + dst[9]*m2[2] ;
+  }
 };
 
 template<class numtype>
@@ -1182,10 +1286,30 @@ struct polynomial_multiplier<numtype, 3, 2, 2>
   }
   static void antimul(const numtype dst[], numtype p1[], const numtype p2[])
   { 
+    p1[0] += dst[0]*p2[0] + dst[1]*p2[1] + dst[2]*p2[2] + dst[3]*p2[3] + dst[4]*p2[4] + dst[5]*p2[5] + dst[6]*p2[6] + dst[7]*p2[7] + dst[8]*p2[8] + dst[9]*p2[9] ;
+    p1[1] += dst[1]*p2[0] + dst[4]*p2[1] + dst[5]*p2[2] + dst[6]*p2[3] + dst[10]*p2[4] + dst[11]*p2[5] + dst[12]*p2[6] + dst[13]*p2[7] + dst[14]*p2[8] + dst[15]*p2[9] ;
+    p1[2] += dst[2]*p2[0] + dst[5]*p2[1] + dst[7]*p2[2] + dst[8]*p2[3] + dst[11]*p2[4] + dst[13]*p2[5] + dst[14]*p2[6] + dst[16]*p2[7] + dst[17]*p2[8] + dst[18]*p2[9] ;
+    p1[3] += dst[3]*p2[0] + dst[6]*p2[1] + dst[8]*p2[2] + dst[9]*p2[3] + dst[12]*p2[4] + dst[14]*p2[5] + dst[15]*p2[6] + dst[17]*p2[7] + dst[18]*p2[8] + dst[19]*p2[9] ;
+    p1[4] += dst[4]*p2[0] + dst[10]*p2[1] + dst[11]*p2[2] + dst[12]*p2[3] + dst[20]*p2[4] + dst[21]*p2[5] + dst[22]*p2[6] + dst[23]*p2[7] + dst[24]*p2[8] + dst[25]*p2[9] ;
+    p1[5] += dst[5]*p2[0] + dst[11]*p2[1] + dst[13]*p2[2] + dst[14]*p2[3] + dst[21]*p2[4] + dst[23]*p2[5] + dst[24]*p2[6] + dst[26]*p2[7] + dst[27]*p2[8] + dst[28]*p2[9] ;
+    p1[6] += dst[6]*p2[0] + dst[12]*p2[1] + dst[14]*p2[2] + dst[15]*p2[3] + dst[22]*p2[4] + dst[24]*p2[5] + dst[25]*p2[6] + dst[27]*p2[7] + dst[28]*p2[8] + dst[29]*p2[9] ;
+    p1[7] += dst[7]*p2[0] + dst[13]*p2[1] + dst[16]*p2[2] + dst[17]*p2[3] + dst[23]*p2[4] + dst[26]*p2[5] + dst[27]*p2[6] + dst[30]*p2[7] + dst[31]*p2[8] + dst[32]*p2[9] ;
+    p1[8] += dst[8]*p2[0] + dst[14]*p2[1] + dst[17]*p2[2] + dst[18]*p2[3] + dst[24]*p2[4] + dst[27]*p2[5] + dst[28]*p2[6] + dst[31]*p2[7] + dst[32]*p2[8] + dst[33]*p2[9] ;
+    p1[9] += dst[9]*p2[0] + dst[15]*p2[1] + dst[18]*p2[2] + dst[19]*p2[3] + dst[25]*p2[4] + dst[28]*p2[5] + dst[29]*p2[6] + dst[32]*p2[7] + dst[33]*p2[8] + dst[34]*p2[9] ;
   }
   static void antimul_monomial(const numtype dst[], numtype p1[], const numtype m2[])
-  {
-  }    
+  { 
+    p1[0] += dst[4]*m2[0] + dst[5]*m2[1] + dst[6]*m2[2] + dst[7]*m2[3] + dst[8]*m2[4] + dst[9]*m2[5] ;
+    p1[1] += dst[10]*m2[0] + dst[11]*m2[1] + dst[12]*m2[2] + dst[13]*m2[3] + dst[14]*m2[4] + dst[15]*m2[5] ;
+    p1[2] += dst[11]*m2[0] + dst[13]*m2[1] + dst[14]*m2[2] + dst[16]*m2[3] + dst[17]*m2[4] + dst[18]*m2[5] ;
+    p1[3] += dst[12]*m2[0] + dst[14]*m2[1] + dst[15]*m2[2] + dst[17]*m2[3] + dst[18]*m2[4] + dst[19]*m2[5] ;
+    p1[4] += dst[20]*m2[0] + dst[21]*m2[1] + dst[22]*m2[2] + dst[23]*m2[3] + dst[24]*m2[4] + dst[25]*m2[5] ;
+    p1[5] += dst[21]*m2[0] + dst[23]*m2[1] + dst[24]*m2[2] + dst[26]*m2[3] + dst[27]*m2[4] + dst[28]*m2[5] ;
+    p1[6] += dst[22]*m2[0] + dst[24]*m2[1] + dst[25]*m2[2] + dst[27]*m2[3] + dst[28]*m2[4] + dst[29]*m2[5] ;
+    p1[7] += dst[23]*m2[0] + dst[26]*m2[1] + dst[27]*m2[2] + dst[30]*m2[3] + dst[31]*m2[4] + dst[32]*m2[5] ;
+    p1[8] += dst[24]*m2[0] + dst[27]*m2[1] + dst[28]*m2[2] + dst[31]*m2[3] + dst[32]*m2[4] + dst[33]*m2[5] ;
+    p1[9] += dst[25]*m2[0] + dst[28]*m2[1] + dst[29]*m2[2] + dst[32]*m2[3] + dst[33]*m2[4] + dst[34]*m2[5] ;
+  }
 };
 
 template<class numtype>
@@ -1600,10 +1724,50 @@ struct polynomial_multiplier<numtype, 3, 3, 3>
   }
   static void antimul(const numtype dst[], numtype p1[], const numtype p2[])
   { 
+    p1[0] += dst[0]*p2[0] + dst[1]*p2[1] + dst[2]*p2[2] + dst[3]*p2[3] + dst[4]*p2[4] + dst[5]*p2[5] + dst[6]*p2[6] + dst[7]*p2[7] + dst[8]*p2[8] + dst[9]*p2[9] + dst[10]*p2[10] + dst[11]*p2[11] + dst[12]*p2[12] + dst[13]*p2[13] + dst[14]*p2[14] + dst[15]*p2[15] + dst[16]*p2[16] + dst[17]*p2[17] + dst[18]*p2[18] + dst[19]*p2[19] ;
+    p1[1] += dst[1]*p2[0] + dst[4]*p2[1] + dst[5]*p2[2] + dst[6]*p2[3] + dst[10]*p2[4] + dst[11]*p2[5] + dst[12]*p2[6] + dst[13]*p2[7] + dst[14]*p2[8] + dst[15]*p2[9] + dst[20]*p2[10] + dst[21]*p2[11] + dst[22]*p2[12] + dst[23]*p2[13] + dst[24]*p2[14] + dst[25]*p2[15] + dst[26]*p2[16] + dst[27]*p2[17] + dst[28]*p2[18] + dst[29]*p2[19] ;
+    p1[2] += dst[2]*p2[0] + dst[5]*p2[1] + dst[7]*p2[2] + dst[8]*p2[3] + dst[11]*p2[4] + dst[13]*p2[5] + dst[14]*p2[6] + dst[16]*p2[7] + dst[17]*p2[8] + dst[18]*p2[9] + dst[21]*p2[10] + dst[23]*p2[11] + dst[24]*p2[12] + dst[26]*p2[13] + dst[27]*p2[14] + dst[28]*p2[15] + dst[30]*p2[16] + dst[31]*p2[17] + dst[32]*p2[18] + dst[33]*p2[19] ;
+    p1[3] += dst[3]*p2[0] + dst[6]*p2[1] + dst[8]*p2[2] + dst[9]*p2[3] + dst[12]*p2[4] + dst[14]*p2[5] + dst[15]*p2[6] + dst[17]*p2[7] + dst[18]*p2[8] + dst[19]*p2[9] + dst[22]*p2[10] + dst[24]*p2[11] + dst[25]*p2[12] + dst[27]*p2[13] + dst[28]*p2[14] + dst[29]*p2[15] + dst[31]*p2[16] + dst[32]*p2[17] + dst[33]*p2[18] + dst[34]*p2[19] ;
+    p1[4] += dst[4]*p2[0] + dst[10]*p2[1] + dst[11]*p2[2] + dst[12]*p2[3] + dst[20]*p2[4] + dst[21]*p2[5] + dst[22]*p2[6] + dst[23]*p2[7] + dst[24]*p2[8] + dst[25]*p2[9] + dst[35]*p2[10] + dst[36]*p2[11] + dst[37]*p2[12] + dst[38]*p2[13] + dst[39]*p2[14] + dst[40]*p2[15] + dst[41]*p2[16] + dst[42]*p2[17] + dst[43]*p2[18] + dst[44]*p2[19] ;
+    p1[5] += dst[5]*p2[0] + dst[11]*p2[1] + dst[13]*p2[2] + dst[14]*p2[3] + dst[21]*p2[4] + dst[23]*p2[5] + dst[24]*p2[6] + dst[26]*p2[7] + dst[27]*p2[8] + dst[28]*p2[9] + dst[36]*p2[10] + dst[38]*p2[11] + dst[39]*p2[12] + dst[41]*p2[13] + dst[42]*p2[14] + dst[43]*p2[15] + dst[45]*p2[16] + dst[46]*p2[17] + dst[47]*p2[18] + dst[48]*p2[19] ;
+    p1[6] += dst[6]*p2[0] + dst[12]*p2[1] + dst[14]*p2[2] + dst[15]*p2[3] + dst[22]*p2[4] + dst[24]*p2[5] + dst[25]*p2[6] + dst[27]*p2[7] + dst[28]*p2[8] + dst[29]*p2[9] + dst[37]*p2[10] + dst[39]*p2[11] + dst[40]*p2[12] + dst[42]*p2[13] + dst[43]*p2[14] + dst[44]*p2[15] + dst[46]*p2[16] + dst[47]*p2[17] + dst[48]*p2[18] + dst[49]*p2[19] ;
+    p1[7] += dst[7]*p2[0] + dst[13]*p2[1] + dst[16]*p2[2] + dst[17]*p2[3] + dst[23]*p2[4] + dst[26]*p2[5] + dst[27]*p2[6] + dst[30]*p2[7] + dst[31]*p2[8] + dst[32]*p2[9] + dst[38]*p2[10] + dst[41]*p2[11] + dst[42]*p2[12] + dst[45]*p2[13] + dst[46]*p2[14] + dst[47]*p2[15] + dst[50]*p2[16] + dst[51]*p2[17] + dst[52]*p2[18] + dst[53]*p2[19] ;
+    p1[8] += dst[8]*p2[0] + dst[14]*p2[1] + dst[17]*p2[2] + dst[18]*p2[3] + dst[24]*p2[4] + dst[27]*p2[5] + dst[28]*p2[6] + dst[31]*p2[7] + dst[32]*p2[8] + dst[33]*p2[9] + dst[39]*p2[10] + dst[42]*p2[11] + dst[43]*p2[12] + dst[46]*p2[13] + dst[47]*p2[14] + dst[48]*p2[15] + dst[51]*p2[16] + dst[52]*p2[17] + dst[53]*p2[18] + dst[54]*p2[19] ;
+    p1[9] += dst[9]*p2[0] + dst[15]*p2[1] + dst[18]*p2[2] + dst[19]*p2[3] + dst[25]*p2[4] + dst[28]*p2[5] + dst[29]*p2[6] + dst[32]*p2[7] + dst[33]*p2[8] + dst[34]*p2[9] + dst[40]*p2[10] + dst[43]*p2[11] + dst[44]*p2[12] + dst[47]*p2[13] + dst[48]*p2[14] + dst[49]*p2[15] + dst[52]*p2[16] + dst[53]*p2[17] + dst[54]*p2[18] + dst[55]*p2[19] ;
+    p1[10] += dst[10]*p2[0] + dst[20]*p2[1] + dst[21]*p2[2] + dst[22]*p2[3] + dst[35]*p2[4] + dst[36]*p2[5] + dst[37]*p2[6] + dst[38]*p2[7] + dst[39]*p2[8] + dst[40]*p2[9] + dst[56]*p2[10] + dst[57]*p2[11] + dst[58]*p2[12] + dst[59]*p2[13] + dst[60]*p2[14] + dst[61]*p2[15] + dst[62]*p2[16] + dst[63]*p2[17] + dst[64]*p2[18] + dst[65]*p2[19] ;
+    p1[11] += dst[11]*p2[0] + dst[21]*p2[1] + dst[23]*p2[2] + dst[24]*p2[3] + dst[36]*p2[4] + dst[38]*p2[5] + dst[39]*p2[6] + dst[41]*p2[7] + dst[42]*p2[8] + dst[43]*p2[9] + dst[57]*p2[10] + dst[59]*p2[11] + dst[60]*p2[12] + dst[62]*p2[13] + dst[63]*p2[14] + dst[64]*p2[15] + dst[66]*p2[16] + dst[67]*p2[17] + dst[68]*p2[18] + dst[69]*p2[19] ;
+    p1[12] += dst[12]*p2[0] + dst[22]*p2[1] + dst[24]*p2[2] + dst[25]*p2[3] + dst[37]*p2[4] + dst[39]*p2[5] + dst[40]*p2[6] + dst[42]*p2[7] + dst[43]*p2[8] + dst[44]*p2[9] + dst[58]*p2[10] + dst[60]*p2[11] + dst[61]*p2[12] + dst[63]*p2[13] + dst[64]*p2[14] + dst[65]*p2[15] + dst[67]*p2[16] + dst[68]*p2[17] + dst[69]*p2[18] + dst[70]*p2[19] ;
+    p1[13] += dst[13]*p2[0] + dst[23]*p2[1] + dst[26]*p2[2] + dst[27]*p2[3] + dst[38]*p2[4] + dst[41]*p2[5] + dst[42]*p2[6] + dst[45]*p2[7] + dst[46]*p2[8] + dst[47]*p2[9] + dst[59]*p2[10] + dst[62]*p2[11] + dst[63]*p2[12] + dst[66]*p2[13] + dst[67]*p2[14] + dst[68]*p2[15] + dst[71]*p2[16] + dst[72]*p2[17] + dst[73]*p2[18] + dst[74]*p2[19] ;
+    p1[14] += dst[14]*p2[0] + dst[24]*p2[1] + dst[27]*p2[2] + dst[28]*p2[3] + dst[39]*p2[4] + dst[42]*p2[5] + dst[43]*p2[6] + dst[46]*p2[7] + dst[47]*p2[8] + dst[48]*p2[9] + dst[60]*p2[10] + dst[63]*p2[11] + dst[64]*p2[12] + dst[67]*p2[13] + dst[68]*p2[14] + dst[69]*p2[15] + dst[72]*p2[16] + dst[73]*p2[17] + dst[74]*p2[18] + dst[75]*p2[19] ;
+    p1[15] += dst[15]*p2[0] + dst[25]*p2[1] + dst[28]*p2[2] + dst[29]*p2[3] + dst[40]*p2[4] + dst[43]*p2[5] + dst[44]*p2[6] + dst[47]*p2[7] + dst[48]*p2[8] + dst[49]*p2[9] + dst[61]*p2[10] + dst[64]*p2[11] + dst[65]*p2[12] + dst[68]*p2[13] + dst[69]*p2[14] + dst[70]*p2[15] + dst[73]*p2[16] + dst[74]*p2[17] + dst[75]*p2[18] + dst[76]*p2[19] ;
+    p1[16] += dst[16]*p2[0] + dst[26]*p2[1] + dst[30]*p2[2] + dst[31]*p2[3] + dst[41]*p2[4] + dst[45]*p2[5] + dst[46]*p2[6] + dst[50]*p2[7] + dst[51]*p2[8] + dst[52]*p2[9] + dst[62]*p2[10] + dst[66]*p2[11] + dst[67]*p2[12] + dst[71]*p2[13] + dst[72]*p2[14] + dst[73]*p2[15] + dst[77]*p2[16] + dst[78]*p2[17] + dst[79]*p2[18] + dst[80]*p2[19] ;
+    p1[17] += dst[17]*p2[0] + dst[27]*p2[1] + dst[31]*p2[2] + dst[32]*p2[3] + dst[42]*p2[4] + dst[46]*p2[5] + dst[47]*p2[6] + dst[51]*p2[7] + dst[52]*p2[8] + dst[53]*p2[9] + dst[63]*p2[10] + dst[67]*p2[11] + dst[68]*p2[12] + dst[72]*p2[13] + dst[73]*p2[14] + dst[74]*p2[15] + dst[78]*p2[16] + dst[79]*p2[17] + dst[80]*p2[18] + dst[81]*p2[19] ;
+    p1[18] += dst[18]*p2[0] + dst[28]*p2[1] + dst[32]*p2[2] + dst[33]*p2[3] + dst[43]*p2[4] + dst[47]*p2[5] + dst[48]*p2[6] + dst[52]*p2[7] + dst[53]*p2[8] + dst[54]*p2[9] + dst[64]*p2[10] + dst[68]*p2[11] + dst[69]*p2[12] + dst[73]*p2[13] + dst[74]*p2[14] + dst[75]*p2[15] + dst[79]*p2[16] + dst[80]*p2[17] + dst[81]*p2[18] + dst[82]*p2[19] ;
+    p1[19] += dst[19]*p2[0] + dst[29]*p2[1] + dst[33]*p2[2] + dst[34]*p2[3] + dst[44]*p2[4] + dst[48]*p2[5] + dst[49]*p2[6] + dst[53]*p2[7] + dst[54]*p2[8] + dst[55]*p2[9] + dst[65]*p2[10] + dst[69]*p2[11] + dst[70]*p2[12] + dst[74]*p2[13] + dst[75]*p2[14] + dst[76]*p2[15] + dst[80]*p2[16] + dst[81]*p2[17] + dst[82]*p2[18] + dst[83]*p2[19] ;
   }
   static void antimul_monomial(const numtype dst[], numtype p1[], const numtype m2[])
-  {
-  }    
+  { 
+    p1[0] += dst[10]*m2[0] + dst[11]*m2[1] + dst[12]*m2[2] + dst[13]*m2[3] + dst[14]*m2[4] + dst[15]*m2[5] + dst[16]*m2[6] + dst[17]*m2[7] + dst[18]*m2[8] + dst[19]*m2[9] ;
+    p1[1] += dst[20]*m2[0] + dst[21]*m2[1] + dst[22]*m2[2] + dst[23]*m2[3] + dst[24]*m2[4] + dst[25]*m2[5] + dst[26]*m2[6] + dst[27]*m2[7] + dst[28]*m2[8] + dst[29]*m2[9] ;
+    p1[2] += dst[21]*m2[0] + dst[23]*m2[1] + dst[24]*m2[2] + dst[26]*m2[3] + dst[27]*m2[4] + dst[28]*m2[5] + dst[30]*m2[6] + dst[31]*m2[7] + dst[32]*m2[8] + dst[33]*m2[9] ;
+    p1[3] += dst[22]*m2[0] + dst[24]*m2[1] + dst[25]*m2[2] + dst[27]*m2[3] + dst[28]*m2[4] + dst[29]*m2[5] + dst[31]*m2[6] + dst[32]*m2[7] + dst[33]*m2[8] + dst[34]*m2[9] ;
+    p1[4] += dst[35]*m2[0] + dst[36]*m2[1] + dst[37]*m2[2] + dst[38]*m2[3] + dst[39]*m2[4] + dst[40]*m2[5] + dst[41]*m2[6] + dst[42]*m2[7] + dst[43]*m2[8] + dst[44]*m2[9] ;
+    p1[5] += dst[36]*m2[0] + dst[38]*m2[1] + dst[39]*m2[2] + dst[41]*m2[3] + dst[42]*m2[4] + dst[43]*m2[5] + dst[45]*m2[6] + dst[46]*m2[7] + dst[47]*m2[8] + dst[48]*m2[9] ;
+    p1[6] += dst[37]*m2[0] + dst[39]*m2[1] + dst[40]*m2[2] + dst[42]*m2[3] + dst[43]*m2[4] + dst[44]*m2[5] + dst[46]*m2[6] + dst[47]*m2[7] + dst[48]*m2[8] + dst[49]*m2[9] ;
+    p1[7] += dst[38]*m2[0] + dst[41]*m2[1] + dst[42]*m2[2] + dst[45]*m2[3] + dst[46]*m2[4] + dst[47]*m2[5] + dst[50]*m2[6] + dst[51]*m2[7] + dst[52]*m2[8] + dst[53]*m2[9] ;
+    p1[8] += dst[39]*m2[0] + dst[42]*m2[1] + dst[43]*m2[2] + dst[46]*m2[3] + dst[47]*m2[4] + dst[48]*m2[5] + dst[51]*m2[6] + dst[52]*m2[7] + dst[53]*m2[8] + dst[54]*m2[9] ;
+    p1[9] += dst[40]*m2[0] + dst[43]*m2[1] + dst[44]*m2[2] + dst[47]*m2[3] + dst[48]*m2[4] + dst[49]*m2[5] + dst[52]*m2[6] + dst[53]*m2[7] + dst[54]*m2[8] + dst[55]*m2[9] ;
+    p1[10] += dst[56]*m2[0] + dst[57]*m2[1] + dst[58]*m2[2] + dst[59]*m2[3] + dst[60]*m2[4] + dst[61]*m2[5] + dst[62]*m2[6] + dst[63]*m2[7] + dst[64]*m2[8] + dst[65]*m2[9] ;
+    p1[11] += dst[57]*m2[0] + dst[59]*m2[1] + dst[60]*m2[2] + dst[62]*m2[3] + dst[63]*m2[4] + dst[64]*m2[5] + dst[66]*m2[6] + dst[67]*m2[7] + dst[68]*m2[8] + dst[69]*m2[9] ;
+    p1[12] += dst[58]*m2[0] + dst[60]*m2[1] + dst[61]*m2[2] + dst[63]*m2[3] + dst[64]*m2[4] + dst[65]*m2[5] + dst[67]*m2[6] + dst[68]*m2[7] + dst[69]*m2[8] + dst[70]*m2[9] ;
+    p1[13] += dst[59]*m2[0] + dst[62]*m2[1] + dst[63]*m2[2] + dst[66]*m2[3] + dst[67]*m2[4] + dst[68]*m2[5] + dst[71]*m2[6] + dst[72]*m2[7] + dst[73]*m2[8] + dst[74]*m2[9] ;
+    p1[14] += dst[60]*m2[0] + dst[63]*m2[1] + dst[64]*m2[2] + dst[67]*m2[3] + dst[68]*m2[4] + dst[69]*m2[5] + dst[72]*m2[6] + dst[73]*m2[7] + dst[74]*m2[8] + dst[75]*m2[9] ;
+    p1[15] += dst[61]*m2[0] + dst[64]*m2[1] + dst[65]*m2[2] + dst[68]*m2[3] + dst[69]*m2[4] + dst[70]*m2[5] + dst[73]*m2[6] + dst[74]*m2[7] + dst[75]*m2[8] + dst[76]*m2[9] ;
+    p1[16] += dst[62]*m2[0] + dst[66]*m2[1] + dst[67]*m2[2] + dst[71]*m2[3] + dst[72]*m2[4] + dst[73]*m2[5] + dst[77]*m2[6] + dst[78]*m2[7] + dst[79]*m2[8] + dst[80]*m2[9] ;
+    p1[17] += dst[63]*m2[0] + dst[67]*m2[1] + dst[68]*m2[2] + dst[72]*m2[3] + dst[73]*m2[4] + dst[74]*m2[5] + dst[78]*m2[6] + dst[79]*m2[7] + dst[80]*m2[8] + dst[81]*m2[9] ;
+    p1[18] += dst[64]*m2[0] + dst[68]*m2[1] + dst[69]*m2[2] + dst[73]*m2[3] + dst[74]*m2[4] + dst[75]*m2[5] + dst[79]*m2[6] + dst[80]*m2[7] + dst[81]*m2[8] + dst[82]*m2[9] ;
+    p1[19] += dst[65]*m2[0] + dst[69]*m2[1] + dst[70]*m2[2] + dst[74]*m2[3] + dst[75]*m2[4] + dst[76]*m2[5] + dst[80]*m2[6] + dst[81]*m2[7] + dst[82]*m2[8] + dst[83]*m2[9] ;
+  }
 };
 
 template<class numtype>
@@ -1840,10 +2004,20 @@ struct polynomial_multiplier<numtype, 4, 1, 1>
   }
   static void antimul(const numtype dst[], numtype p1[], const numtype p2[])
   { 
+    p1[0] += dst[0]*p2[0] + dst[1]*p2[1] + dst[2]*p2[2] + dst[3]*p2[3] + dst[4]*p2[4] ;
+    p1[1] += dst[1]*p2[0] + dst[5]*p2[1] + dst[6]*p2[2] + dst[7]*p2[3] + dst[8]*p2[4] ;
+    p1[2] += dst[2]*p2[0] + dst[6]*p2[1] + dst[9]*p2[2] + dst[10]*p2[3] + dst[11]*p2[4] ;
+    p1[3] += dst[3]*p2[0] + dst[7]*p2[1] + dst[10]*p2[2] + dst[12]*p2[3] + dst[13]*p2[4] ;
+    p1[4] += dst[4]*p2[0] + dst[8]*p2[1] + dst[11]*p2[2] + dst[13]*p2[3] + dst[14]*p2[4] ;
   }
   static void antimul_monomial(const numtype dst[], numtype p1[], const numtype m2[])
-  {
-  }    
+  { 
+    p1[0] += dst[1]*m2[0] + dst[2]*m2[1] + dst[3]*m2[2] + dst[4]*m2[3] ;
+    p1[1] += dst[5]*m2[0] + dst[6]*m2[1] + dst[7]*m2[2] + dst[8]*m2[3] ;
+    p1[2] += dst[6]*m2[0] + dst[9]*m2[1] + dst[10]*m2[2] + dst[11]*m2[3] ;
+    p1[3] += dst[7]*m2[0] + dst[10]*m2[1] + dst[12]*m2[2] + dst[13]*m2[3] ;
+    p1[4] += dst[8]*m2[0] + dst[11]*m2[1] + dst[13]*m2[2] + dst[14]*m2[3] ;
+  }
 };
 
 template<class numtype>
@@ -2197,10 +2371,40 @@ struct polynomial_multiplier<numtype, 4, 2, 2>
   }
   static void antimul(const numtype dst[], numtype p1[], const numtype p2[])
   { 
+    p1[0] += dst[0]*p2[0] + dst[1]*p2[1] + dst[2]*p2[2] + dst[3]*p2[3] + dst[4]*p2[4] + dst[5]*p2[5] + dst[6]*p2[6] + dst[7]*p2[7] + dst[8]*p2[8] + dst[9]*p2[9] + dst[10]*p2[10] + dst[11]*p2[11] + dst[12]*p2[12] + dst[13]*p2[13] + dst[14]*p2[14] ;
+    p1[1] += dst[1]*p2[0] + dst[5]*p2[1] + dst[6]*p2[2] + dst[7]*p2[3] + dst[8]*p2[4] + dst[15]*p2[5] + dst[16]*p2[6] + dst[17]*p2[7] + dst[18]*p2[8] + dst[19]*p2[9] + dst[20]*p2[10] + dst[21]*p2[11] + dst[22]*p2[12] + dst[23]*p2[13] + dst[24]*p2[14] ;
+    p1[2] += dst[2]*p2[0] + dst[6]*p2[1] + dst[9]*p2[2] + dst[10]*p2[3] + dst[11]*p2[4] + dst[16]*p2[5] + dst[19]*p2[6] + dst[20]*p2[7] + dst[21]*p2[8] + dst[25]*p2[9] + dst[26]*p2[10] + dst[27]*p2[11] + dst[28]*p2[12] + dst[29]*p2[13] + dst[30]*p2[14] ;
+    p1[3] += dst[3]*p2[0] + dst[7]*p2[1] + dst[10]*p2[2] + dst[12]*p2[3] + dst[13]*p2[4] + dst[17]*p2[5] + dst[20]*p2[6] + dst[22]*p2[7] + dst[23]*p2[8] + dst[26]*p2[9] + dst[28]*p2[10] + dst[29]*p2[11] + dst[31]*p2[12] + dst[32]*p2[13] + dst[33]*p2[14] ;
+    p1[4] += dst[4]*p2[0] + dst[8]*p2[1] + dst[11]*p2[2] + dst[13]*p2[3] + dst[14]*p2[4] + dst[18]*p2[5] + dst[21]*p2[6] + dst[23]*p2[7] + dst[24]*p2[8] + dst[27]*p2[9] + dst[29]*p2[10] + dst[30]*p2[11] + dst[32]*p2[12] + dst[33]*p2[13] + dst[34]*p2[14] ;
+    p1[5] += dst[5]*p2[0] + dst[15]*p2[1] + dst[16]*p2[2] + dst[17]*p2[3] + dst[18]*p2[4] + dst[35]*p2[5] + dst[36]*p2[6] + dst[37]*p2[7] + dst[38]*p2[8] + dst[39]*p2[9] + dst[40]*p2[10] + dst[41]*p2[11] + dst[42]*p2[12] + dst[43]*p2[13] + dst[44]*p2[14] ;
+    p1[6] += dst[6]*p2[0] + dst[16]*p2[1] + dst[19]*p2[2] + dst[20]*p2[3] + dst[21]*p2[4] + dst[36]*p2[5] + dst[39]*p2[6] + dst[40]*p2[7] + dst[41]*p2[8] + dst[45]*p2[9] + dst[46]*p2[10] + dst[47]*p2[11] + dst[48]*p2[12] + dst[49]*p2[13] + dst[50]*p2[14] ;
+    p1[7] += dst[7]*p2[0] + dst[17]*p2[1] + dst[20]*p2[2] + dst[22]*p2[3] + dst[23]*p2[4] + dst[37]*p2[5] + dst[40]*p2[6] + dst[42]*p2[7] + dst[43]*p2[8] + dst[46]*p2[9] + dst[48]*p2[10] + dst[49]*p2[11] + dst[51]*p2[12] + dst[52]*p2[13] + dst[53]*p2[14] ;
+    p1[8] += dst[8]*p2[0] + dst[18]*p2[1] + dst[21]*p2[2] + dst[23]*p2[3] + dst[24]*p2[4] + dst[38]*p2[5] + dst[41]*p2[6] + dst[43]*p2[7] + dst[44]*p2[8] + dst[47]*p2[9] + dst[49]*p2[10] + dst[50]*p2[11] + dst[52]*p2[12] + dst[53]*p2[13] + dst[54]*p2[14] ;
+    p1[9] += dst[9]*p2[0] + dst[19]*p2[1] + dst[25]*p2[2] + dst[26]*p2[3] + dst[27]*p2[4] + dst[39]*p2[5] + dst[45]*p2[6] + dst[46]*p2[7] + dst[47]*p2[8] + dst[55]*p2[9] + dst[56]*p2[10] + dst[57]*p2[11] + dst[58]*p2[12] + dst[59]*p2[13] + dst[60]*p2[14] ;
+    p1[10] += dst[10]*p2[0] + dst[20]*p2[1] + dst[26]*p2[2] + dst[28]*p2[3] + dst[29]*p2[4] + dst[40]*p2[5] + dst[46]*p2[6] + dst[48]*p2[7] + dst[49]*p2[8] + dst[56]*p2[9] + dst[58]*p2[10] + dst[59]*p2[11] + dst[61]*p2[12] + dst[62]*p2[13] + dst[63]*p2[14] ;
+    p1[11] += dst[11]*p2[0] + dst[21]*p2[1] + dst[27]*p2[2] + dst[29]*p2[3] + dst[30]*p2[4] + dst[41]*p2[5] + dst[47]*p2[6] + dst[49]*p2[7] + dst[50]*p2[8] + dst[57]*p2[9] + dst[59]*p2[10] + dst[60]*p2[11] + dst[62]*p2[12] + dst[63]*p2[13] + dst[64]*p2[14] ;
+    p1[12] += dst[12]*p2[0] + dst[22]*p2[1] + dst[28]*p2[2] + dst[31]*p2[3] + dst[32]*p2[4] + dst[42]*p2[5] + dst[48]*p2[6] + dst[51]*p2[7] + dst[52]*p2[8] + dst[58]*p2[9] + dst[61]*p2[10] + dst[62]*p2[11] + dst[65]*p2[12] + dst[66]*p2[13] + dst[67]*p2[14] ;
+    p1[13] += dst[13]*p2[0] + dst[23]*p2[1] + dst[29]*p2[2] + dst[32]*p2[3] + dst[33]*p2[4] + dst[43]*p2[5] + dst[49]*p2[6] + dst[52]*p2[7] + dst[53]*p2[8] + dst[59]*p2[9] + dst[62]*p2[10] + dst[63]*p2[11] + dst[66]*p2[12] + dst[67]*p2[13] + dst[68]*p2[14] ;
+    p1[14] += dst[14]*p2[0] + dst[24]*p2[1] + dst[30]*p2[2] + dst[33]*p2[3] + dst[34]*p2[4] + dst[44]*p2[5] + dst[50]*p2[6] + dst[53]*p2[7] + dst[54]*p2[8] + dst[60]*p2[9] + dst[63]*p2[10] + dst[64]*p2[11] + dst[67]*p2[12] + dst[68]*p2[13] + dst[69]*p2[14] ;
   }
   static void antimul_monomial(const numtype dst[], numtype p1[], const numtype m2[])
-  {
-  }    
+  { 
+    p1[0] += dst[5]*m2[0] + dst[6]*m2[1] + dst[7]*m2[2] + dst[8]*m2[3] + dst[9]*m2[4] + dst[10]*m2[5] + dst[11]*m2[6] + dst[12]*m2[7] + dst[13]*m2[8] + dst[14]*m2[9] ;
+    p1[1] += dst[15]*m2[0] + dst[16]*m2[1] + dst[17]*m2[2] + dst[18]*m2[3] + dst[19]*m2[4] + dst[20]*m2[5] + dst[21]*m2[6] + dst[22]*m2[7] + dst[23]*m2[8] + dst[24]*m2[9] ;
+    p1[2] += dst[16]*m2[0] + dst[19]*m2[1] + dst[20]*m2[2] + dst[21]*m2[3] + dst[25]*m2[4] + dst[26]*m2[5] + dst[27]*m2[6] + dst[28]*m2[7] + dst[29]*m2[8] + dst[30]*m2[9] ;
+    p1[3] += dst[17]*m2[0] + dst[20]*m2[1] + dst[22]*m2[2] + dst[23]*m2[3] + dst[26]*m2[4] + dst[28]*m2[5] + dst[29]*m2[6] + dst[31]*m2[7] + dst[32]*m2[8] + dst[33]*m2[9] ;
+    p1[4] += dst[18]*m2[0] + dst[21]*m2[1] + dst[23]*m2[2] + dst[24]*m2[3] + dst[27]*m2[4] + dst[29]*m2[5] + dst[30]*m2[6] + dst[32]*m2[7] + dst[33]*m2[8] + dst[34]*m2[9] ;
+    p1[5] += dst[35]*m2[0] + dst[36]*m2[1] + dst[37]*m2[2] + dst[38]*m2[3] + dst[39]*m2[4] + dst[40]*m2[5] + dst[41]*m2[6] + dst[42]*m2[7] + dst[43]*m2[8] + dst[44]*m2[9] ;
+    p1[6] += dst[36]*m2[0] + dst[39]*m2[1] + dst[40]*m2[2] + dst[41]*m2[3] + dst[45]*m2[4] + dst[46]*m2[5] + dst[47]*m2[6] + dst[48]*m2[7] + dst[49]*m2[8] + dst[50]*m2[9] ;
+    p1[7] += dst[37]*m2[0] + dst[40]*m2[1] + dst[42]*m2[2] + dst[43]*m2[3] + dst[46]*m2[4] + dst[48]*m2[5] + dst[49]*m2[6] + dst[51]*m2[7] + dst[52]*m2[8] + dst[53]*m2[9] ;
+    p1[8] += dst[38]*m2[0] + dst[41]*m2[1] + dst[43]*m2[2] + dst[44]*m2[3] + dst[47]*m2[4] + dst[49]*m2[5] + dst[50]*m2[6] + dst[52]*m2[7] + dst[53]*m2[8] + dst[54]*m2[9] ;
+    p1[9] += dst[39]*m2[0] + dst[45]*m2[1] + dst[46]*m2[2] + dst[47]*m2[3] + dst[55]*m2[4] + dst[56]*m2[5] + dst[57]*m2[6] + dst[58]*m2[7] + dst[59]*m2[8] + dst[60]*m2[9] ;
+    p1[10] += dst[40]*m2[0] + dst[46]*m2[1] + dst[48]*m2[2] + dst[49]*m2[3] + dst[56]*m2[4] + dst[58]*m2[5] + dst[59]*m2[6] + dst[61]*m2[7] + dst[62]*m2[8] + dst[63]*m2[9] ;
+    p1[11] += dst[41]*m2[0] + dst[47]*m2[1] + dst[49]*m2[2] + dst[50]*m2[3] + dst[57]*m2[4] + dst[59]*m2[5] + dst[60]*m2[6] + dst[62]*m2[7] + dst[63]*m2[8] + dst[64]*m2[9] ;
+    p1[12] += dst[42]*m2[0] + dst[48]*m2[1] + dst[51]*m2[2] + dst[52]*m2[3] + dst[58]*m2[4] + dst[61]*m2[5] + dst[62]*m2[6] + dst[65]*m2[7] + dst[66]*m2[8] + dst[67]*m2[9] ;
+    p1[13] += dst[43]*m2[0] + dst[49]*m2[1] + dst[52]*m2[2] + dst[53]*m2[3] + dst[59]*m2[4] + dst[62]*m2[5] + dst[63]*m2[6] + dst[66]*m2[7] + dst[67]*m2[8] + dst[68]*m2[9] ;
+    p1[14] += dst[44]*m2[0] + dst[50]*m2[1] + dst[53]*m2[2] + dst[54]*m2[3] + dst[60]*m2[4] + dst[63]*m2[5] + dst[64]*m2[6] + dst[67]*m2[7] + dst[68]*m2[8] + dst[69]*m2[9] ;
+  }
 };
 
 template<class numtype>

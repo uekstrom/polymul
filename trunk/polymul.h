@@ -1083,6 +1083,10 @@ struct transformer<numtype,Nvar_dst,Nvar_src,Ndeg,Nvar_src,1,term>
 		    numtype T[Nvar_dst*Nvar_src]) {}
 };
 
+#ifdef POLYMUL_TAB
+#include "polymul_tab.h"
+#endif
+
 } // End of namespace polymul_internal
 
 // Length of a nvar,neg polynomial

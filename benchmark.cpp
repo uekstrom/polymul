@@ -25,7 +25,6 @@ void benchmark(void)
 
   // Multiplication
   int nrep = 2e7/p1.size;
-
   gettimeofday(&t0,NULL);
   for (int i=0;i<nrep;i++)
     {
@@ -52,7 +51,7 @@ void benchmark(void)
   cout << "taylormul " << nrep/dt << " muls/s "  << p1[0] << " " <<  dt<< endl;
 
   // Taylor in place Multiplication
-  nrep = 20e7/p1.size;
+  nrep = 20e6/p1.size;
 
   gettimeofday(&t0,NULL);
   for (int i=0;i<nrep;i++)
@@ -65,7 +64,7 @@ void benchmark(void)
   cout << "taylormul inplace " << nrep/dt << " muls/s "  << p1[0] << " " <<  dt<< endl;
 
   // Linear transformation
-  nrep = 10e7/p1.size;
+  nrep = 1e7/p1.size;
   numtype T[Nvar*Nvar];
   for (int i=0;i<Nvar*Nvar;i++)
     T[i] = sin(i);

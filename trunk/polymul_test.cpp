@@ -1,8 +1,10 @@
 #include <iostream>
 #include <cmath>
-#include "polymul.h"
 
 using namespace std;
+#include "polymul.h"
+
+
 
 template<class num, int Nvar, int Ndeg>
 void printpoly(ostream &dst, const polynomial<num,Nvar,Ndeg> &p)
@@ -103,7 +105,7 @@ int main(void)
      44, 125, 184, 327, 559, 561, 302, 782, 976, 
      595, 238, 591, 1066, 849, 496};
 
-  int eval_1d_x[] = {11,-13,17};
+  //int eval_1d_x[] = {11,-13,17};
   double eval_1d_x_double[] = {11,-13,17};
   int eval_1d_p[] = {3,5,-7};
   int eval_1d_px[] = {-789, -1245, -1935};
@@ -138,6 +140,15 @@ int main(void)
 	  cout << "WARNING (known good vs polymul): " <<  i << " "<< pp_good[i]<< " " << pp[i] <<endl;
 	}
     }
+  // Converting type
+  polynomial<double,3,4> p_double;
+  polynomial<int,3,2> p_back_from_double;
+  p1.convert_to(p_double);
+  p_double.convert_to(p_back_from_double);
+  for (int i=0;i<p_back_from_double.size;i++)
+    if (p1[i] != p_back_from_double[i])
+      cout << "WARNING: convert_to() failed" << endl;
+
   // Is term_prod correct?
   if (polymul_internal::term_prod<3,1,2>::prod != 5)
     cout << "WARNING: term_prod<3,1,2> incorrect = " << polymul_internal::term_prod<3,1,2>::prod << endl;
@@ -228,6 +239,29 @@ int main(void)
       cout << "WARNING: single term multiply failed at " << i << endl;
 
   test_polytrans();
+
+  // Test differentiation
+  polynomial<int,3,4> dp_in;
+
+  for (int i=0;i<dp_in.size;i++)
+    dp_in[i] = 1;
+
+  polynomial<int,3,3> dp2,dp1,dp0;    
+  dp_in.diff<2>(dp2);
+  dp_in.diff<1>(dp1);
+  dp_in.diff<0>(dp0);
+  for (int i=0;i<dp0.size;i++)
+    {
+      int e[3];
+      dp0.exponents(i,e);
+      if (dp0[i] != e[0]+1)
+	cout << "WARNING, error in polynomial::diff<0>" << endl;
+      if (dp1[i] != e[1]+1)
+	cout << "WARNING, error in polynomial::diff<1>" << endl;
+      if (dp2[i] != e[2]+1)
+	cout << "WARNING, error in polynomial::diff<2>" << endl;
+    }
+
 #if 0
   //Eval terms
   double ex[] = {2,3,5,1,1};
@@ -237,23 +271,12 @@ int main(void)
   cout << "Terms for x=2, y=3, z=5:\n";
   printpoly(cout,pterms);
 #endif
-#ifdef BENCHMARK
-  // Eval bench
-  double sum = 0;
-  for (int i=0;i<1e7;i++)
-    {
-      ex[1] += i & 2;
-      sum += pterms.eval_new(ex);
-      sum /= (sum - 1);
-    }
-  cout << sum << endl;
-#endif
 #ifdef __GNUC__NOT_ICC__
   gcc_vectest();
 #endif  
   cout << "If no warnings were printed above, then things are fine." << endl;
   cout << "Polynomial exponents and coefficients:\n";
-  printpoly(cout,p1);
+  printpoly(cout,p1);  
   cout << "End of tests." << endl;
   return 0;
 }

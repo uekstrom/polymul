@@ -76,6 +76,12 @@ struct factorial<0>
 {
   enum { fac = 1 };
 };
+
+template <>
+struct factorial<-1>
+{
+  enum { fac = 1 };
+};
   
 // Template to evaluate binomial coefficients at compile time.
 template <int n, int k>
@@ -87,7 +93,13 @@ struct binomial
 template <int n>
 struct binomial<n,n>
 {
-    enum { value = n > 0 ? 1 : 0 };
+    enum { value = 1 };
+};
+
+template<>
+struct binomial<0,0>
+{
+  enum { value = 1 };
 };
 
 template <int n>
@@ -207,7 +219,7 @@ struct first_exponent<1,0>
   enum { e = 0 };
 };
 
-// Derivative factors
+// Derivative factors n!m!k!.. (for term x^n y^m z^k..)
 // WARNING: may overflow (do we get compiler warning from this?)
 
 template <int Nvar, int term>
@@ -1083,6 +1095,91 @@ struct transformer<numtype,Nvar_dst,Nvar_src,Ndeg,Nvar_src,1,term>
 		    numtype T[Nvar_dst*Nvar_src]) {}
 };
 
+template<class numtype, int Nvar, int Ndeg, int var>
+struct differentiator
+{
+  static void diff(numtype dst[], const numtype src[])
+  {
+    differentiator<numtype,Nvar,Ndeg-1,var>::diff(dst,src);
+    differentiator<numtype,Nvar-1,Ndeg,var-1>::
+      diff(dst+polylen<Nvar,Ndeg-2>::len,src+polylen<Nvar,Ndeg-1>::len);
+  }
+  // Multiply the highest part of dst with the appropriate factors,
+  // assuming it comes from a differentiation wrt variable 0.
+  // var here indicated the factor, so first multiply the first
+  // part of the highest part of dst with var, then the rest with
+  // lower values of var.
+  //
+  // The top monomial starts at polylen<Nvar,Ndeg-1>
+  // it has length polylen<Nvar-1,Ndeg>
+  // The x^m part of it has length polylen<Nvar-1,Ndeg-m>
+
+  static void dfacs(numtype dst[])
+  {
+    for (int i=polylen<Nvar,Ndeg-1>::len+polylen<Nvar-1,Ndeg-var-1>::len;
+	     i<polylen<Nvar,Ndeg-1>::len+polylen<Nvar-1,Ndeg-var>::len;i++)
+      dst[i] *= var+1;
+    differentiator<numtype,Nvar,Ndeg,var-1>::dfacs(dst);
+  }
+};
+
+template<class numtype, int Nvar, int var>
+struct differentiator<numtype, Nvar, 0, var>
+{
+  static void diff(numtype dst[], const numtype src[])
+  {
+    dst[0] = 0;
+  }
+  static void dfacs(numtype dst[]) 
+  { 
+  }
+};
+
+
+template<class numtype, int Nvar>
+struct differentiator<numtype, Nvar, 0, 0>
+{
+  static void diff(numtype dst[], const numtype src[])
+  {
+    dst[0] = 0;
+  }
+  static void dfacs(numtype dst[])  
+  { 
+  }
+};
+
+template<class numtype, int Nvar, int Ndeg>
+struct differentiator<numtype, Nvar, Ndeg, 0>
+{
+  static void diff(numtype dst[], const numtype src[])
+  {
+    differentiator<numtype,Nvar,Ndeg-1,0>::diff(dst,src);
+    // copy first part of highest monomial to next highest
+    for (int i=0;i<polylen<Nvar-1,Ndeg-1>::len;i++)
+      dst[polylen<Nvar,Ndeg-2>::len+i] = src[polylen<Nvar,Ndeg-1>::len+i];
+    // Multiply by (old) x exponents
+    differentiator<numtype,Nvar,Ndeg-1,Ndeg-1>::dfacs(dst);
+  }
+  // Multiply the highest part of dst with the appropriate factors
+  static void dfacs(numtype dst[]) 
+  {
+  } // Multiply by 1, a NOP
+};
+
+template<class numtype, int Ndeg>
+struct differentiator<numtype, 1, Ndeg, 0>
+{
+  static void diff(numtype dst[], const numtype src[])
+  {
+    for (int i=0;i<Ndeg;i++)
+      dst[i] = (i+1)*src[i+1];
+  }
+  static void dfacs(numtype dst[]) 
+  {
+    assert(0 && "BUG");
+  }
+};
+
 #ifdef POLYMUL_TAB
 #include "polymul_tab.h"
 #endif
@@ -1134,6 +1231,27 @@ template<class numtype, int Nvar, int Ndeg>
     assert(i<this->size);
     return c[i];
   }
+  // Convert this polynomial to a polynomial of different degree
+  // and/or different scalar type. Zeros are inserted if the new
+  // polynomial has higher degree than this.
+  // TODO: Allow also change of Nvar
+  template<class numtype2, int Ndeg2>
+  void convert_to(polynomial<numtype2, Nvar, Ndeg2> &dst)
+  {
+    if (size < int(dst.size)) 
+      {
+	for (int i=0;i<size;i++)
+	  dst.c[i] = c[i];
+	for (int i=size;i<dst.size;i++)
+	  dst.c[i] = 0;
+      }
+    else
+      {
+	for (int i=0;i<dst.size;i++)
+	  dst.c[i] = c[i];
+      }
+  }
+
   // This is a _very slow_ function to get the exponents
   // of a particular term. 
   static void exponents(int term, int exponents[Nvar])
@@ -1206,6 +1324,11 @@ template<class numtype, int Nvar, int Ndeg>
 	  }
 	m[nvar-1] = 0;
       }
+  }
+  template<int var>
+  void diff(polynomial<numtype, Nvar, Ndeg-1> &dp)
+  {
+    polymul_internal::differentiator<numtype,Nvar,Ndeg,var>::diff(dp.c,c);
   }
   numtype c[size];
 };
@@ -1288,7 +1411,6 @@ void polydfac(polynomial<numtype, Nvar, Ndeg> &p)
     ::deriv_fac_multiplier<numtype,Nvar,
        polymul_internal::polylen<Nvar,Ndeg>::len>::mul_fac(p.c);   
 }
-
 
 // Perform a linear change of variables, with x_i in src
 // being equal to the linear combination as

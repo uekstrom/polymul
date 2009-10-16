@@ -1409,7 +1409,7 @@ void polydfac(polynomial<numtype, Nvar, Ndeg> &p)
 {
   polymul_internal
     ::deriv_fac_multiplier<numtype,Nvar,
-       polymul_internal::polylen<Nvar,Ndeg>::len>::mul_fac(p.c);   
+       polymul_internal::polylen<Nvar,Ndeg>::len-1>::mul_fac(p.c);   
 }
 
 // Perform a linear change of variables, with x_i in src

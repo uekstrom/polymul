@@ -83,5 +83,5 @@ void benchmark(void)
 
 int main(void)
 {
-  benchmark<double,3,5>();
+  benchmark<double,4,4>();
 }

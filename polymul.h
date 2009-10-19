@@ -1201,7 +1201,7 @@ inline int polylen(int nvar, int ndeg)
 }
 
 template<class numtype, int Nvar, int Ndeg>
-  class polynomial
+class polynomial
 {
  public:
   enum { size = polymul_internal::polylen<Nvar,Ndeg>::len };
@@ -1210,13 +1210,14 @@ template<class numtype, int Nvar, int Ndeg>
     { 
       c[0] = c0;
       for (int i=1;i<size;i++)
-	c[i] = 0;
+	c[i] = numtype(0);
     }
-  polynomial<numtype, Nvar, Ndeg> &operator=(const numtype &c0)
+  template<class T>
+  polynomial<numtype, Nvar, Ndeg> &operator=(const T &c0)
     {
-      c[0] = c0;
+      c[0] = numtype(c0);
       for (int i=1;i<size;i++)
-	c[i] = 0;
+	c[i] = numtype(0);
       return *this;
     }
   const numtype &operator[](int i) const

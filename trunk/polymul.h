@@ -1200,18 +1200,33 @@ inline int polylen(int nvar, int ndeg)
   return len;
 }
 
+/**
+ *  Polynomial with Nvar variables and degree Ndeg. The type 
+ *  numtype is the type of the coefficients.
+ */
 template<class numtype, int Nvar, int Ndeg>
 class polynomial
 {
  public:
+  /**
+   *  Number of coefficients.
+   */
   enum { size = polymul_internal::polylen<Nvar,Ndeg>::len };
   polynomial(void) {}
+  /**
+   *  Construct a polynomial with constant coefficient c0
+   *  and other terms zero.
+   */
   polynomial(const numtype &c0) 
     { 
       c[0] = c0;
       for (int i=1;i<size;i++)
 	c[i] = numtype(0);
     }
+  /**
+   *  Assign the constant term the value c0 and zero the
+   *  other terms.
+   */
   template<class T>
   polynomial<numtype, Nvar, Ndeg> &operator=(const T &c0)
     {
@@ -1220,21 +1235,30 @@ class polynomial
 	c[i] = numtype(0);
       return *this;
     }
+  /**
+   *  Return coefficient i, in graded lexicographical
+   *  order, for example 1 x y x^2 xy y^2 ..
+   */
   const numtype &operator[](int i) const
   {
     assert(i>=0);
     assert(i<this->size);
     return c[i];
   }
+  /**
+   *  Return coefficient i, in graded lexicographical
+   *  order, for example 1 x y x^2 xy y^2 ..
+   */
   numtype &operator[](int i)
   {
     assert(i>=0);
     assert(i<this->size);
     return c[i];
   }
-  // Convert this polynomial to a polynomial of different degree
-  // and/or different scalar type. Zeros are inserted if the new
-  // polynomial has higher degree than this.
+  /** Convert this polynomial to a polynomial of different degree
+   * and/or different scalar type. Zeros are inserted if the new
+   * polynomial has higher degree than this.
+   */
   // TODO: Allow also change of Nvar
   template<class numtype2, int Ndeg2>
   void convert_to(polynomial<numtype2, Nvar, Ndeg2> &dst)
@@ -1253,8 +1277,9 @@ class polynomial
       }
   }
 
-  // This is a _very slow_ function to get the exponents
-  // of a particular term. 
+  /** Calculate the exponents of the given term. This is a slow
+   *  function.
+   */
   static void exponents(int term, int exponents[Nvar])
   {
     assert(term >= 0);
@@ -1272,7 +1297,8 @@ class polynomial
     for (int i=0;i<term;i++)
       polynomial<numtype,Nvar,Ndeg>::next_exponents(Nvar,exponents);
   }
-  // Return the index of the term with certain exponents
+  /** Return the index of the term with the given exponents.
+   */
   static int term_index(const int exponents[Nvar])
   {
     int N = 0;
@@ -1288,14 +1314,26 @@ class polynomial
       }
     return idx;
   }
-  // Evaluate the polynomial at x.
+  /** Evaluate the polynomial at x.
+   */
   template<class vartype>
   vartype eval(const vartype x[Nvar]) const
   {
     return polymul_internal::polynomial_evaluator<numtype,vartype,Nvar,Ndeg>::
       eval(c,x);
   }
-
+  /** Calculate the derivative of this with respect to variable
+   *  var, putting the result in dp.
+   */
+  template<int var>
+  void diff(polynomial<numtype, Nvar, Ndeg-1> &dp) const
+  {
+    polymul_internal::differentiator<numtype,Nvar,Ndeg,var>::diff(dp.c,c);
+  }
+  /** Coefficients
+   */
+  numtype c[size];
+protected:
   static void next_exponents(int nvar, int m[Nvar])
   {
     int k = 0;
@@ -1326,12 +1364,6 @@ class polynomial
 	m[nvar-1] = 0;
       }
   }
-  template<int var>
-  void diff(polynomial<numtype, Nvar, Ndeg-1> &dp)
-  {
-    polymul_internal::differentiator<numtype,Nvar,Ndeg,var>::diff(dp.c,c);
-  }
-  numtype c[size];
 };
 
 
@@ -1373,8 +1405,8 @@ inline void polymul_term(polynomial<numtype, Nvar,Ndeg+polymul_internal::term_de
 			   const polynomial<numtype, Nvar,Ndeg> &p,
 			   const numtype &c)
 {
-  polymul_internal::term_multiplier<numtype,Nvar,polymul_internal
-    ::polylen<Nvar,Ndeg>::len-1,rterm>
+  polymul_internal::term_multiplier<numtype,Nvar,
+    polymul_internal::polylen<Nvar,Ndeg>::len-1,rterm>
     ::mul(dst.c,p.c,c);
 }
 

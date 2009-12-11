@@ -1460,6 +1460,39 @@ void polytrans(polynomial<numtype, Nvar_dst,Ndeg> &dst,
 }
 
 
+// Functions for vectorization
+
+template<class numtype, int Nvar, int Ndeg1, int Ndeg2>
+inline void polymul_vec(int size, 
+			polynomial<numtype, Nvar,Ndeg1+Ndeg2> dst[],
+			const polynomial<numtype, Nvar,Ndeg1> p1[],
+			const polynomial<numtype, Nvar,Ndeg2> p2[])
+{
+  for (int i=0;i<size;i++)
+    polymul(dst[i],p1[i],p2[i]);
+}
+
+
+template<class numtype, int Nvar, int Ndeg>
+inline void taylormul_vec(int size, 
+			  polynomial<numtype, Nvar,Ndeg> dst[],
+			  const polynomial<numtype, Nvar,Ndeg> p1[],
+			  const polynomial<numtype, Nvar,Ndeg> p2[])
+{
+  for (int i=0;i<size;i++)
+    taylormul(dst[i],p1[i],p2[i]);
+}
+
+template<class numtype, int Nvar, int Ndeg, int Ndeg2>
+inline void taylormul_vec(int size,
+			  polynomial<numtype, Nvar,Ndeg> p1[],
+			  const polynomial<numtype, Nvar,Ndeg2> p2[])
+{
+  for (int i=0;i<size;i++)
+    taylormul(p1[i],p2[i]);
+}
+
+
 #endif
 
 
